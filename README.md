@@ -1,2 +1,2 @@
 # go-react-starter-kit
-Get started with Golang, React, and Dva.
+Get started with Beego, React, Antd, and Dva.
