@@ -7,9 +7,14 @@
 // @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
 package routers
 
-import "github.com/astaxie/beego"
+import (
+	"github.com/astaxie/beego"
+	"github.com/jdongdong/go-react-starter-kit/controllers"
+)
 
 func init() {
-	ns := beego.NewNamespace("/v1")
+	ns := beego.NewNamespace("/v1",
+		beego.NSNamespace("/sysUser", beego.NSInclude(&controllers.SysUserController{})),
+	)
 	beego.AddNamespace(ns)
 }

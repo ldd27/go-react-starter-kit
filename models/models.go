@@ -16,8 +16,8 @@ type SysLog struct {
 }
 
 type SysMenu struct {
-	Id         string    `xorm:"not null pk VARCHAR(32)"`
-	Pid        string    `xorm:"not null VARCHAR(32)"`
+	Id         int64     `xorm:"pk BIGINT(20)"`
+	Pid        int64     `xorm:"not null BIGINT(20)"`
 	Name       string    `xorm:"not null VARCHAR(50)"`
 	Href       string    `xorm:"VARCHAR(100)"`
 	Icon       string    `xorm:"VARCHAR(20)"`

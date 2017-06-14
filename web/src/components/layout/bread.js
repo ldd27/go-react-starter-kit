@@ -19,8 +19,8 @@ const Bread = ({ menu }) => {
 
   const getPathArray = (item) => {
     pathArray.unshift(item)
-    if (item.bpid) {
-      getPathArray(queryArray(menu, item.bpid, 'id'))
+    if (item.pid) {
+      getPathArray(queryArray(menu, item.pid, 'id'))
     }
   }
 
@@ -36,6 +36,9 @@ const Bread = ({ menu }) => {
 
   // 递归查找父级
   const breads = pathArray.map((item, key) => {
+    if (!item) {
+      return ''
+    }
     const content = (
       <span>{item.icon
           ? <Icon type={item.icon} style={{ marginRight: 4 }} />

@@ -34,6 +34,21 @@ type PageResModel struct {
 	Total int64       `json:"total"`
 }
 
+const controllerType string = "web"
+
+func (this *BaseController) Prepare() {
+	defer this.ReqLog()
+	needAuth := this.NeedAuth("/v1/sysUser/login")
+	if !needAuth {
+		return
+	}
+
+	valid := this.ParseHeaderToken(true, controllerType)
+	if !valid {
+		return
+	}
+}
+
 func (this *BaseController) toResModel(err_code int, info string, r interface{}) ResModel {
 	if r == nil {
 		r = ""
@@ -65,12 +80,12 @@ func (this *BaseController) Fail(err error) {
 	this.ServeJSON()
 }
 
-func (this *BaseController) ToJson(i interface{}) error {
+func (this *BaseController) ToJson(i interface{}) bool {
 	err := errCode.CheckErrorInvalidJson(ffjson.Unmarshal(this.Ctx.Input.RequestBody, &i))
 	if err != nil {
 		this.Fail(err)
 	}
-	return err
+	return err == nil
 }
 
 func (this *BaseController) ToInt(s string) (int, error) {
@@ -133,9 +148,13 @@ func (this *BaseController) ParseHeaderToken(neeRs bool, userType string) bool {
 	}
 
 	if vlu, ok := data.(map[string]interface{}); ok {
-		this.UserID = tool.ToString(vlu["id"])
+		this.UserID = tool.ToString(vlu["Id"])
 	}
+
 	if this.UserID == "" {
+		if neeRs {
+			this.Fail(errCode.ErrorInvalidToken)
+		}
 		return false
 	}
 	return true

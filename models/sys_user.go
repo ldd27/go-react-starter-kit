@@ -9,6 +9,7 @@ import (
 
 type SeaSysUser struct {
 	SeaModel
+	Id       string
 	LoginKey string
 	Password string
 	UserType string
@@ -28,34 +29,71 @@ type SysUserModel struct {
 }
 
 type WebLoginUserModel struct {
-	Id        string
-	UserName  string
-	LoginName string
-	Phone     string
-	Email     string
-	Sex       string
-	Brief     string
-	Menus     []MenuModel
+	Id       string
+	UserName string
+	Token    string
+	Menus    []MenuModel
+}
+
+func (this *SeaSysUser) GetLoginByUserID() (*WebLoginUserModel, error) {
+	sea := new(SeaSysUser)
+	sea.Id = this.Id
+	user := new(SysUser)
+	err := sea._getOne(sea, user)
+	if err != nil {
+		return nil, err
+	}
+	loginUser := new(WebLoginUserModel)
+	loginUser.UserName = user.UserName
+	loginUser.Id = user.Id
+
+	seaRole := new(SysRoleUser)
+	seaRole.UserId = user.Id
+	menus, err := seaRole.GetMenusByUserID()
+	if err != nil {
+		return nil, err
+	}
+	loginUser.Menus = menus
+
+	return loginUser, nil
 }
 
 func (this *SeaSysUser) WebLogin() (*WebLoginUserModel, error) {
 	sea := new(SeaSysUser)
 	sea.Password = tool.MD5(this.Password)
 	sea.UserType = comCode.UserType_Web
+	sea.LoginKey = this.LoginKey
 	user, err := sea.login()
 	if err != nil {
 		return nil, err
 	}
 	loginUser := new(WebLoginUserModel)
-	loginUser.Brief = user.Brief
-	loginUser.Email = user.Email
-	loginUser.Id = user.Id
-	loginUser.LoginName = user.LoginName
-	loginUser.Phone = user.Phone
-	loginUser.Sex = user.Sex
 	loginUser.UserName = user.UserName
+	loginUser.Id = user.Id
 
-	return nil, nil
+	token, err := tool.GenToken(loginUser)
+	if err != nil {
+		return nil, err
+	}
+
+	seaRole := new(SysRoleUser)
+	seaRole.UserId = user.Id
+	menus, err := seaRole.GetMenusByUserID()
+	if err != nil {
+		return nil, err
+	}
+	loginUser.Menus = menus
+
+	sysToken := new(SysToken)
+	sysToken.UserId = user.Id
+	sysToken.Token = token
+	err = sysToken.Insert()
+	if err != nil {
+		return nil, err
+	}
+	loginUser.Token = token
+
+	return loginUser, nil
 }
 
 func (this *SeaSysUser) login() (*SysUser, error) {
@@ -77,6 +115,9 @@ func (this *SeaSysUser) where(session *xorm.Session) {
 	}
 	if this.Status != "" {
 		session.And("a.status = ?", this.Status)
+	}
+	if this.Id != "" {
+		session.And("a.id = ?", this.Id)
 	}
 	session.Table("sys_user").Alias("a").Desc("a.id")
 }

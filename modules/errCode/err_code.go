@@ -122,7 +122,7 @@ func CheckErrorInvalidToken(err error) error {
 	if err != nil {
 		pc, file, line, ok := runtime.Caller(2)
 		slog.Error(pc, file, line, ok, err)
-		return ErrorInvalidJson
+		return ErrorInvalidToken
 	}
 	return nil
 }

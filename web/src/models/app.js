@@ -1,13 +1,14 @@
-import { query, logout } from '../services/app'
+import * as service from '../services/app'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
-import { config } from '../utils'
+import { config, checkApiRs, cookie } from '../utils'
 const { prefix } = config
 
 export default {
   namespace: 'app',
   state: {
     user: {},
+    menu: cookie.getCookie(`${prefix}menu`) ? JSON.parse(cookie.getCookie(`${prefix}menu`)) : [],
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -17,7 +18,7 @@ export default {
   subscriptions: {
 
     setup ({ dispatch }) {
-      dispatch({ type: 'query' })
+      dispatch({ type: 'checkIsLogin' })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -30,23 +31,29 @@ export default {
   },
   effects: {
 
-    *query ({
+    *checkIsLogin ({
       payload,
     }, { call, put }) {
-      const data = yield call(query, parse(payload))
-      if (data.success && data.user) {
+      const data = yield call(service.checkIsLoginService, parse(payload))
+      if (data.success) {
+        // cookie.setCookie(`${prefix}username`, data.r.UserName)
+        cookie.setCookie(`${prefix}menu`, JSON.stringify(data.r.Menus))
         yield put({
           type: 'querySuccess',
-          payload: data.user,
+          payload: {username: data.r.UserName},
+        })
+        yield put({
+          type: 'common',
+          payload: {menu: data.r.Menus},
         })
         if (location.pathname === '/login') {
-          yield put(routerRedux.push('/dashboard'))
+          yield put(routerRedux.push('/home'))
         }
       } else {
         if (location.pathname !== '/login') {
           let from = location.pathname
-          if (location.pathname === '/dashboard') {
-            from = '/dashboard'
+          if (location.pathname === '/home') {
+            from = '/home'
           }
           window.location = `${location.origin}/login?from=${from}`
         }
@@ -56,11 +63,20 @@ export default {
     *logout ({
       payload,
     }, { call, put }) {
-      const data = yield call(logout, parse(payload))
+      const data = yield call(service.logoutService, parse(payload))
       if (data.success) {
-        yield put({ type: 'query' })
+        // cookie.delCookie(`${prefix}username`, data.r.UserName)
+        cookie.delCookie(`${prefix}token`, data.r.Token)
+        cookie.delCookie(`${prefix}menu`, data.r.Menus)
+        if (location.pathname !== '/login') {
+          let from = location.pathname
+          if (location.pathname === '/home') {
+            from = '/home'
+          }
+          window.location = `${location.origin}/login?from=${from}`
+        }
       } else {
-        throw (data)
+        checkApiRs(data)
       }
     },
 
@@ -117,6 +133,13 @@ export default {
       return {
         ...state,
         ...navOpenKeys,
+      }
+    },
+
+    common (state, { payload }) {     
+      return {
+        ...state,
+        ...payload,
       }
     },
   },

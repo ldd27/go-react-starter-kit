@@ -39,7 +39,7 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
           }} title={<span><Icon type="user" />{user.username}</span>}
           >
             <Menu.Item key="logout">
-              Sign out
+              退出登录
             </Menu.Item>
           </SubMenu>
         </Menu>

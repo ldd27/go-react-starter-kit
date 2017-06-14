@@ -15,8 +15,8 @@ const Routers = function ({ history, app }) {
       path: '/',
       component: App,
       getIndexRoute (nextState, cb) {
-        require.ensure([], require => {
-          cb(null, require('./routes/home'))
+       require.ensure([], require => {
+          cb(null, {component: require('./routes/home')})
         }, 'home')
       },
       childRoutes: [

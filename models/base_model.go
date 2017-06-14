@@ -37,11 +37,12 @@ type TreeModel struct {
 }
 
 type MenuModel struct {
-	Key   string      `json:"key"`
-	Href  string      `json:"href"`
-	Name  string      `json:"name"`
-	Icon  string      `json:"icon"`
-	Child []MenuModel `json:"child"`
+	Id     int64  `json:"id"`
+	Pid    int64  `json:"pid"`
+	Sort   int    `json:"sort"`
+	Name   string `json:"name"`
+	Icon   string `json:"icon"`
+	Router string `json:"router"`
 }
 
 type SeaInterface interface {
@@ -112,7 +113,8 @@ func SetEngine() (err error) {
 	x.ShowExecTime(true)
 
 	x.ShowSQL(true)
-	x.Logger().SetLevel(core.LOG_ERR)
+	//x.Logger().SetLevel(core.LOG_ERR)
+	x.Logger().SetLevel(core.LOG_DEBUG)
 	return nil
 }
 

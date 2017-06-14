@@ -1,11 +1,5 @@
-import { request, config } from '../utils'
-const { api } = config
-const { userLogin } = api
+import { post } from '../utils'
 
-export async function login (data) {
-  return request({
-    url: userLogin,
-    method: 'post',
-    data,
-  })
+export async function loginService (data) {
+  return post('sysUser/login', data)
 }

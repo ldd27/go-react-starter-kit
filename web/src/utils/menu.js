@@ -3,7 +3,7 @@ module.exports = [
     id: 1,
     icon: 'laptop',
     name: 'Dashboard',
-    router: '/dashboard',
+    router: '/home',
   },
   {
     id: 2,
