@@ -8,7 +8,8 @@ export default {
   namespace: 'app',
   state: {
     user: {},
-    menu: cookie.getCookie(`${prefix}menu`) ? JSON.parse(cookie.getCookie(`${prefix}menu`)) : [],
+    // menu: cookie.getCookie(`${prefix}menu`) ? JSON.parse(cookie.getCookie(`${prefix}menu`)) : [],
+    menu: [],
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',

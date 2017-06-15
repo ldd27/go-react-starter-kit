@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'go-react-starter-kit',
+  name: 'starter-kit',
   prefix: 'go-react-starter-kit',
   footerText: 'go-react-starter-kit  © 2017 ldd',
   logo: '/logo.png',

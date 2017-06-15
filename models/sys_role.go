@@ -2,7 +2,7 @@ package models
 
 import "github.com/jdongdong/go-react-starter-kit/modules/errCode"
 
-func (this *SysRoleUser) GetMenusByUserID() ([]MenuModel, error) {
+func (this *SysRoleUser) GetMenusByUserID() ([]LeftMenuModel, error) {
 	menus := make([]SysMenu, 0)
 	err := errCode.CheckErrorDB(x.
 		Table("sys_menu").
@@ -13,12 +13,13 @@ func (this *SysRoleUser) GetMenusByUserID() ([]MenuModel, error) {
 	return this.toMenuModel(menus), nil
 }
 
-func (this *SysRoleUser) toMenuModel(menus []SysMenu) []MenuModel {
-	rs := make([]MenuModel, len(menus))
+func (this *SysRoleUser) toMenuModel(menus []SysMenu) []LeftMenuModel {
+	rs := make([]LeftMenuModel, len(menus))
 	for k, v := range menus {
-		item := new(MenuModel)
+		item := new(LeftMenuModel)
 		item.Id = v.Id
 		item.Pid = v.Pid
+		item.MPid = v.BreadPid
 		item.Name = v.Name
 		item.Sort = v.Sort
 		item.Router = v.Href

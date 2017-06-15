@@ -36,9 +36,10 @@ type TreeModel struct {
 	Children []TreeModel `json:"children"`
 }
 
-type MenuModel struct {
+type LeftMenuModel struct {
 	Id     int64  `json:"id"`
 	Pid    int64  `json:"pid"`
+	MPid   int64  `json:"breadPid"`
 	Sort   int    `json:"sort"`
 	Name   string `json:"name"`
 	Icon   string `json:"icon"`

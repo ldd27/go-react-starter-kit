@@ -16,18 +16,15 @@ type SysLog struct {
 }
 
 type SysMenu struct {
-	Id         int64     `xorm:"pk BIGINT(20)"`
-	Pid        int64     `xorm:"not null BIGINT(20)"`
-	Name       string    `xorm:"not null VARCHAR(50)"`
-	Href       string    `xorm:"VARCHAR(100)"`
-	Icon       string    `xorm:"VARCHAR(20)"`
-	Sort       int       `xorm:"INT(11)"`
-	Type       string    `xorm:"not null VARCHAR(10)"`
-	Status     string    `xorm:"not null VARCHAR(2)"`
-	CreateBy   string    `xorm:"VARCHAR(32)"`
-	CreateTime time.Time `xorm:"DATETIME"`
-	UpdateBy   string    `xorm:"VARCHAR(32)"`
-	UpdateTime time.Time `xorm:"DATETIME"`
+	Id       int64  `xorm:"pk BIGINT(20)"`
+	Pid      int64  `xorm:"not null BIGINT(20)"`
+	BreadPid int64  `xorm:"BIGINT(20)"`
+	Name     string `xorm:"not null VARCHAR(50)"`
+	Href     string `xorm:"VARCHAR(100)"`
+	Icon     string `xorm:"VARCHAR(20)"`
+	Sort     int    `xorm:"INT(11)"`
+	Type     string `xorm:"not null VARCHAR(10)"`
+	Status   string `xorm:"not null VARCHAR(2)"`
 }
 
 type SysRole struct {
@@ -43,18 +40,18 @@ type SysRole struct {
 type SysRoleMenu struct {
 	Id     int    `xorm:"not null pk autoincr INT(11)"`
 	RoleId string `xorm:"not null unique(role_id) VARCHAR(32)"`
-	MenuId string `xorm:"not null unique(role_id) VARCHAR(32)"`
+	MenuId int64  `xorm:"not null unique(role_id) index BIGINT(20)"`
 }
 
 type SysRoleUser struct {
 	Id     int    `xorm:"not null pk autoincr INT(11)"`
 	RoleId string `xorm:"not null unique(role_id) VARCHAR(32)"`
-	UserId string `xorm:"not null unique(role_id) VARCHAR(32)"`
+	UserId string `xorm:"not null unique(role_id) index VARCHAR(32)"`
 }
 
 type SysToken struct {
 	Id         int64     `xorm:"pk autoincr BIGINT(20)"`
-	UserId     string    `xorm:"VARCHAR(32)"`
+	UserId     string    `xorm:"index VARCHAR(32)"`
 	Token      string    `xorm:"TEXT"`
 	Status     string    `xorm:"VARCHAR(2)"`
 	CreateTime time.Time `xorm:"DATETIME"`

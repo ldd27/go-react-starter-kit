@@ -18,27 +18,29 @@ const Bread = ({ menu }) => {
   }
 
   const getPathArray = (item) => {
+    if (!item) {
+      return
+    }
     pathArray.unshift(item)
-    if (item.pid) {
-      getPathArray(queryArray(menu, item.pid, 'id'))
+    if (item.breadPid) {
+      getPathArray(queryArray(menu, item.breadPid, 'id'))
     }
   }
 
   if (!current) {
-    pathArray.push(menu[0])
-    pathArray.push({
-      id: 404,
-      name: 'Not Found',
-    })
+    if (menu[0]) {
+      pathArray.push(menu[0])
+      // pathArray.push({
+      //   id: 404,
+      //   name: 'Not Found',
+      // })
+    }
   } else {
     getPathArray(current)
   }
 
   // 递归查找父级
   const breads = pathArray.map((item, key) => {
-    if (!item) {
-      return ''
-    }
     const content = (
       <span>{item.icon
           ? <Icon type={item.icon} style={{ marginRight: 4 }} />
@@ -47,7 +49,7 @@ const Bread = ({ menu }) => {
     return (
       <Breadcrumb.Item key={key}>
         {((pathArray.length - 1) !== key)
-          ? <Link to={item.router}>
+          ? <Link to={item.router ? item.router : undefined}>
               {content}
           </Link>
           : content}

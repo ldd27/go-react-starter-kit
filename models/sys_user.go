@@ -32,12 +32,13 @@ type WebLoginUserModel struct {
 	Id       string
 	UserName string
 	Token    string
-	Menus    []MenuModel
+	Menus    []LeftMenuModel
 }
 
 func (this *SeaSysUser) GetLoginByUserID() (*WebLoginUserModel, error) {
 	sea := new(SeaSysUser)
 	sea.Id = this.Id
+	sea.Status = comCode.Status_ON
 	user := new(SysUser)
 	err := sea._getOne(sea, user)
 	if err != nil {
