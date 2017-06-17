@@ -1,5 +1,5 @@
-import * as Layout from './layout/index.js'
+import * as Layout from './layout'
 
 export {
   Layout,
- }
+}

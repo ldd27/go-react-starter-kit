@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
+import { Helmet } from 'react-helmet'
+import NProgress from 'nprogress'
 import { Layout } from '../components'
 import { classnames, config } from '../utils'
-import { Helmet } from 'react-helmet'
 import '../themes/index.less'
 import './app.less'
-import NProgress from 'nprogress'
-const { prefix } = config
+
+const { prefix, name } = config
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
@@ -74,10 +75,10 @@ const App = ({ children, location, dispatch, app, loading }) => {
   return (
     <div>
       <Helmet>
-        <title>ANTD ADMIN</title>
+        <title>{name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
-        {iconFontJS && <script src={iconFontJS}></script>}
+        {iconFontJS && <script src={iconFontJS} />}
         {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />}
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
@@ -101,10 +102,10 @@ const App = ({ children, location, dispatch, app, loading }) => {
 
 App.propTypes = {
   children: PropTypes.element.isRequired,
-  location: PropTypes.object,
+  location: PropTypes.shape,
   dispatch: PropTypes.func,
-  app: PropTypes.object,
-  loading: PropTypes.object,
+  app: PropTypes.shape,
+  loading: PropTypes.shape,
 }
 
 export default connect(({ app, loading }) => ({ app, loading }))(App)

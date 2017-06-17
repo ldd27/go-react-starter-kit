@@ -6,7 +6,7 @@ import { config } from '../../utils'
 import Menus from './menu'
 
 const Sider = ({ siderFold, darkTheme, location, changeTheme, navOpenKeys, changeOpenKeys, menu }) => {
-	const menusProps = {
+  const menusProps = {
     menu,
     siderFold,
     darkTheme,
@@ -14,28 +14,28 @@ const Sider = ({ siderFold, darkTheme, location, changeTheme, navOpenKeys, chang
     navOpenKeys,
     changeOpenKeys,
   }
-	return (
-		<div>
-			<div className={styles.logo}>
-				<img alt={'logo'} src={config.logo}/>
-				{siderFold ? '' : <span>{config.name}</span>}
-			</div>
-			<Menus {...menusProps}/>
-			{!siderFold ? <div className={styles.switchtheme}>
-					<span><Icon type='bulb'/>切换主题</span>
-					<Switch onChange={changeTheme} defaultChecked={darkTheme} checkedChildren='Dark' unCheckedChildren='Light'/>
-				</div> : ''}
-		</div>
-	)
+  return (
+    <div>
+      <div className={styles.logo}>
+        <img alt={'logo'} src={config.logo} />
+        {siderFold ? '' : <span>{config.name}</span>}
+      </div>
+      <Menus {...menusProps} />
+      {!siderFold ? <div className={styles.switchtheme}>
+        <span><Icon type="bulb" />切换主题</span>
+        <Switch onChange={changeTheme} defaultChecked={darkTheme} checkedChildren="Dark" unCheckedChildren="Light" />
+      </div> : ''}
+    </div>
+  )
 }
 
 Sider.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.arrayOf,
   siderFold: PropTypes.bool,
   darkTheme: PropTypes.bool,
-  location: PropTypes.object,
+  location: PropTypes.shape,
   changeTheme: PropTypes.func,
-  navOpenKeys: PropTypes.array,
+  navOpenKeys: PropTypes.arrayOf,
   changeOpenKeys: PropTypes.func,
 }
 

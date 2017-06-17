@@ -2,17 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon } from 'antd'
 import { Link } from 'dva/router'
-import { arrayToTree, queryArray } from '../../utils'
 import pathToRegexp from 'path-to-regexp'
+import { arrayToTree, queryArray } from '../../utils'
 
 const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
-	// 生成树状
+  // 生成树状
   const menuTree = arrayToTree(menu.filter(_ => _.pid !== -1), 'id', 'pid')
   const levelMap = {}
 
-	// 递归生成菜单
+  // 递归生成菜单
   const getMenus = (menuTreeN, siderFoldN) => {
-    return menuTreeN.map(item => {
+    return menuTreeN.map((item) => {
       if (item.children) {
         if (item.pid) {
           levelMap[item.id] = item.pid
@@ -39,9 +39,9 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
       )
     })
   }
-	const menuItems = getMenus(menuTree, siderFold)
+  const menuItems = getMenus(menuTree, siderFold)
 
-	// 保持选中
+  // 保持选中
   const getAncestorKeys = (key) => {
     let map = {}
     const getParent = (index) => {
@@ -59,7 +59,7 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
     return map[key] || []
   }
 
-	const onOpenChange = (openKeys) => {
+  const onOpenChange = (openKeys) => {
     const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1))
     const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1))
     let nextOpenKeys = []
@@ -77,7 +77,7 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
     openKeys: navOpenKeys,
   } : {}
 
-	// 寻找选中路由
+  // 寻找选中路由
   let currentMenu
   let defaultSelectedKeys
   for (let item of menu) {
@@ -101,8 +101,8 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
     defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id')
   }
 
-	return (
-		<Menu
+  return (
+    <Menu
       {...menuProps}
       mode={siderFold ? 'vertical' : 'inline'}
       theme={darkTheme ? 'dark' : 'light'}
@@ -111,17 +111,16 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
     >
       {menuItems}
     </Menu>
-	)
+  )
 }
 
 Menus.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.arrayOf,
   siderFold: PropTypes.bool,
   darkTheme: PropTypes.bool,
-  location: PropTypes.object,
-  isNavbar: PropTypes.bool,
+  location: PropTypes.shape,
   handleClickNavMenu: PropTypes.func,
-  navOpenKeys: PropTypes.array,
+  navOpenKeys: PropTypes.arrayOf,
   changeOpenKeys: PropTypes.func,
 }
 

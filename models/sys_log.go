@@ -42,8 +42,15 @@ func (this *SeaSysLog) where(session *xorm.Session) {
 	session.
 		Table("sys_log").
 		Join("LEFT", "sys_user", "sys_user.id = sys_log.op_user").
-		Desc("sys_log.op_time").
-		Select("sys_log.*, sys_user.user_name as op_user_name")
+		Desc("sys_log.op_time")
+
+	session.Statement.ColumnStr = "sys_log.*, sys_user.user_name as op_user_name"
+}
+
+func (this *SeaSysLog) GetPaging() (interface{}, int64, error) {
+	items := make([]SysLogModel, this.PageSize)
+	count, err := this._getPaging(this, new(SysLog), &items)
+	return items, count, err
 }
 
 func (this *SysLog) Insert() error {

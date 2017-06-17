@@ -49,16 +49,16 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
 }
 
 Header.propTypes = {
-  menu: PropTypes.array,
-  user: PropTypes.object,
+  menu: PropTypes.arrayOf,
+  user: PropTypes.shape,
   logout: PropTypes.func,
   switchSider: PropTypes.func,
   siderFold: PropTypes.bool,
   isNavbar: PropTypes.bool,
   menuPopoverVisible: PropTypes.bool,
-  location: PropTypes.object,
+  location: PropTypes.shape,
   switchMenuPopover: PropTypes.func,
-  navOpenKeys: PropTypes.array,
+  navOpenKeys: PropTypes.shape,
   changeOpenKeys: PropTypes.func,
 }
 

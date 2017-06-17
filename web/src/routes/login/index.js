@@ -66,8 +66,8 @@ const Login = ({
 }
 
 Login.propTypes = {
-  form: PropTypes.object,
-  login: PropTypes.object,
+  form: PropTypes.shape,
+  login: PropTypes.shape,
   dispatch: PropTypes.func,
 }
 

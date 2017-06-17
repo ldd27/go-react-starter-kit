@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'starter-kit',
+  name: '脚手架',
   prefix: 'go-react-starter-kit',
   footerText: 'go-react-starter-kit  © 2017 ldd',
   logo: '/logo.png',

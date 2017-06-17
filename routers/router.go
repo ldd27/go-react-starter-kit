@@ -15,6 +15,7 @@ import (
 func init() {
 	ns := beego.NewNamespace("/v1",
 		beego.NSNamespace("/sysUser", beego.NSInclude(&controllers.SysUserController{})),
+		beego.NSNamespace("/sysLog", beego.NSInclude(&controllers.SysLogController{})),
 	)
 	beego.AddNamespace(ns)
 }

@@ -1,6 +1,7 @@
-import * as service from '../services/login'
 import { routerRedux } from 'dva/router'
+import * as service from '../services/login'
 import { queryURL, cookie, config, checkApiRs } from '../utils'
+
 const { prefix } = config
 
 export default {
@@ -10,7 +11,7 @@ export default {
   },
 
   effects: {
-    *login ({
+    * login ({
       payload,
     }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
@@ -23,11 +24,11 @@ export default {
         const from = queryURL('from')
         yield put({
           type: 'app/common',
-          payload: {menu: data.r.Menus},
+          payload: { menu: data.r.Menus },
         })
         yield put({
           type: 'app/querySuccess',
-          payload: {username: data.r.UserName},
+          payload: { username: data.r.UserName },
         })
 
         if (from) {

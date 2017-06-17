@@ -1,28 +1,27 @@
 const setCookie = (name, value) => {
-	var Minutes = 20
-	var exp = new Date()
-	exp.setTime(exp.getTime() + Minutes*60*60*1000)
-	document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString()
+  let Minutes = 20
+  let exp = new Date()
+  exp.setTime(exp.getTime() + (Minutes * 60 * 60 * 1000))
+  document.cookie = `${name}=${escape(value)};expires=${exp.toGMTString()}`
 }
 
 const getCookie = (name) => {
-	var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)")
-	if(arr=document.cookie.match(reg))
-	return unescape(arr[2])
-	else
-	return null
+  let arr
+  let reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`)
+  arr = document.cookie.match(reg)
+  if (arr) { return unescape(arr[2]) }
+  return null
 }
 
 const delCookie = (name) => {
-	var exp = new Date()
-	exp.setTime(exp.getTime() - 1)
-	var cval=getCookie(name)
-	if(cval!=null)
-	document.cookie= name + "="+cval+";expires="+exp.toGMTString()
+  let exp = new Date()
+  exp.setTime(exp.getTime() - 1)
+  let cval = getCookie(name)
+  if (cval != null) { document.cookie = `${name}=${cval};expires=${exp.toGMTString()}` }
 }
 
 export default {
-	setCookie,
-	getCookie,
-	delCookie
+  setCookie,
+  getCookie,
+  delCookie,
 }

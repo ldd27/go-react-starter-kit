@@ -1,11 +1,44 @@
 import React from 'react'
+import { connect } from 'dva'
+import Table from '../../components/table'
 
-const Home = () => {
-	return (
-		<div className="content-inner">
-			Home
-		</div>
-	)
+const Home = ({ sysLog }) => {
+  const columns = [
+    {
+      title: 'Id',
+      dataIndex: 'Id',
+      key: 'Id',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'Type',
+      key: 'Type',
+    },
+    {
+      title: 'Title',
+      dataIndex: 'Title',
+      key: 'Title',
+    },
+  ]
+
+  const tableProps = {
+    isMotion: true,
+    columns,
+    rowKey: record => record.Id,
+    loading: false,
+    pagination: {
+      total: sysLog.total,
+      pageSize: 10,
+      defaultCurrent: 1,
+      current: 1,
+    },
+    dataSource: sysLog.dataSource,
+  }
+  return (
+    <div className="content-inner">
+      <Table {...tableProps} />
+    </div>
+  )
 }
 
-export default Home
+export default connect(({ sysLog }) => ({ sysLog }))(Home)

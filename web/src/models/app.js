@@ -1,7 +1,8 @@
-import * as service from '../services/app'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
+import * as service from '../services/app'
 import { config, checkApiRs, cookie } from '../utils'
+
 const { prefix } = config
 
 export default {
@@ -17,7 +18,6 @@ export default {
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
   },
   subscriptions: {
-
     setup ({ dispatch }) {
       dispatch({ type: 'checkIsLogin' })
       let tid
@@ -28,42 +28,33 @@ export default {
         }, 300)
       }
     },
-
   },
   effects: {
-
-    *checkIsLogin ({
-      payload,
-    }, { call, put }) {
+    * checkIsLogin ({ payload }, { call, put }) {
       const data = yield call(service.checkIsLoginService, parse(payload))
       if (data.success) {
         // cookie.setCookie(`${prefix}username`, data.r.UserName)
         cookie.setCookie(`${prefix}menu`, JSON.stringify(data.r.Menus))
         yield put({
           type: 'querySuccess',
-          payload: {username: data.r.UserName},
+          payload: { username: data.r.UserName },
         })
         yield put({
           type: 'common',
-          payload: {menu: data.r.Menus},
+          payload: { menu: data.r.Menus },
         })
         if (location.pathname === '/login') {
           yield put(routerRedux.push('/home'))
         }
-      } else {
-        if (location.pathname !== '/login') {
-          let from = location.pathname
-          if (location.pathname === '/home') {
-            from = '/home'
-          }
-          window.location = `${location.origin}/login?from=${from}`
+      } else if (location.pathname !== '/login') {
+        let from = location.pathname
+        if (location.pathname === '/home') {
+          from = '/home'
         }
+        window.location = `${location.origin}/login?from=${from}`
       }
     },
-
-    *logout ({
-      payload,
-    }, { call, put }) {
+    * logout ({ payload }, { call }) {
       const data = yield call(service.logoutService, parse(payload))
       if (data.success) {
         // cookie.delCookie(`${prefix}username`, data.r.UserName)
@@ -80,17 +71,13 @@ export default {
         checkApiRs(data)
       }
     },
-
-    *changeNavbar ({
-      payload,
-    }, { put, select }) {
-      const { app } = yield(select(_ => _))
+    * changeNavbar ({ payload }, { put, select }) {
+      const { app } = yield (select(_ => _))
       const isNavbar = document.body.clientWidth < 769
       if (isNavbar !== app.isNavbar) {
         yield put({ type: 'handleNavbar', payload: isNavbar })
       }
     },
-
   },
   reducers: {
     querySuccess (state, { payload: user }) {
@@ -137,7 +124,7 @@ export default {
       }
     },
 
-    common (state, { payload }) {     
+    common (state, { payload }) {
       return {
         ...state,
         ...payload,

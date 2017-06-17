@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Breadcrumb, Icon } from 'antd'
 import { Link } from 'dva/router'
-import styles from './bread.less'
 import pathToRegexp from 'path-to-regexp'
+import styles from './bread.less'
 import { queryArray } from '../../utils'
 
 const Bread = ({ menu }) => {
@@ -50,7 +50,7 @@ const Bread = ({ menu }) => {
       <Breadcrumb.Item key={key}>
         {((pathArray.length - 1) !== key)
           ? <Link to={item.router ? item.router : undefined}>
-              {content}
+            {content}
           </Link>
           : content}
       </Breadcrumb.Item>
@@ -67,7 +67,7 @@ const Bread = ({ menu }) => {
 }
 
 Bread.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.arrayOf,
 }
 
 export default Bread
