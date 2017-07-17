@@ -3,8 +3,6 @@ package controllers
 import (
 	"fmt"
 
-	"pcs_server/modules/code"
-
 	"reflect"
 	"time"
 
@@ -71,7 +69,7 @@ func (this *BaseController) toResModel(err_code int, info string, r interface{})
 }
 
 func (this *BaseController) Success(r interface{}) {
-	this.Data["json"] = this.toResModel(code.Success, "", r)
+	this.Data["json"] = this.toResModel(apiCode.Success, "", r)
 	this.ServeJSON()
 }
 
