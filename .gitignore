@@ -5,3 +5,4 @@ gen_model.bat
 .idea/
 routers/commentsRouter_controllers.go
 lastupdate.tmp
+vendor/
