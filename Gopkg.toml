@@ -36,3 +36,7 @@
 [[constraint]]
   name = "github.com/go-xorm/xorm"
   version = "0.6.2"
+
+[[constraint]]
+  name = "github.com/labstack/echo"
+  version = "3.1.0"

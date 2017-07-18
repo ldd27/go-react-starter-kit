@@ -1,15 +1,16 @@
 package main
 
 import (
-	_ "github.com/jdongdong/go-react-starter-kit/routers"
+	"fmt"
 
 	"github.com/jdongdong/go-lib/slog"
-	"github.com/labstack/echo"
+	"github.com/jdongdong/go-react-starter-kit/pkg/setting"
+	"github.com/jdongdong/go-react-starter-kit/routers"
 )
 
 func main() {
-	e := echo.New()
-	slog.Error(e.Start(":8080"))
+	router := routers.Init()
+	slog.Error(router.Start(fmt.Sprintf(":%d", setting.Port)))
 	//if beego.BConfig.RunMode == "dev" {
 	//	beego.BConfig.WebConfig.DirectoryIndex = true
 	//	beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
