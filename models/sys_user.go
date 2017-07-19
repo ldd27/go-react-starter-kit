@@ -72,10 +72,10 @@ func (this *SeaSysUser) WebLogin() (*WebLoginUserModel, error) {
 	loginUser.UserName = user.UserName
 	loginUser.Id = user.Id
 
-	//token, err := tool.GenToken(loginUser)
-	//if err != nil {
-	//	return nil, err
-	//}
+	token, err := tool.GenToken(loginUser)
+	if err != nil {
+		return nil, err
+	}
 
 	seaRole := new(SysRoleUser)
 	seaRole.UserId = user.Id
@@ -85,14 +85,14 @@ func (this *SeaSysUser) WebLogin() (*WebLoginUserModel, error) {
 	}
 	loginUser.Menus = menus
 
-	//sysToken := new(SysToken)
-	//sysToken.UserId = user.Id
-	//sysToken.Token = token
-	//err = sysToken.Insert()
-	//if err != nil {
-	//	return nil, err
-	//}
-	//loginUser.Token = token
+	sysToken := new(SysToken)
+	sysToken.UserId = user.Id
+	sysToken.Token = token
+	err = sysToken.Insert()
+	if err != nil {
+		return nil, err
+	}
+	loginUser.Token = token
 
 	return loginUser, nil
 }

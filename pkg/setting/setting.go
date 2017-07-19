@@ -6,9 +6,10 @@ import (
 )
 
 var (
-	Cfg    *ini.File
-	Domain string
-	Port   int
+	Cfg         *ini.File
+	Domain      string
+	Port        int
+	TokenSecret string
 )
 
 func init() {
@@ -19,4 +20,5 @@ func init() {
 	}
 	Domain = Cfg.Section("").Key("domain").MustString("*")
 	Port = Cfg.Section("").Key("port").MustInt(8080)
+	TokenSecret = Cfg.Section("").Key("tokenSecret").MustString("sadjaksdhajks")
 }

@@ -6,9 +6,11 @@ import (
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/pkg/setting"
 	"github.com/jdongdong/go-react-starter-kit/routers"
+	"github.com/jdongdong/go-lib/tool"
 )
 
 func main() {
+	tool.SetTokenSecretKey(setting.TokenSecret)
 	router := routers.Init()
 	slog.Error(router.Start(fmt.Sprintf(":%d", setting.Port)))
 	//if beego.BConfig.RunMode == "dev" {

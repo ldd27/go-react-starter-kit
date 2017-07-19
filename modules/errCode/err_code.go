@@ -4,7 +4,10 @@ import (
 	"errors"
 	"runtime"
 
+	"net/http"
+
 	"github.com/jdongdong/go-lib/slog"
+	"github.com/labstack/echo"
 )
 
 type MyError error
@@ -17,8 +20,6 @@ var (
 	ErrorInvalidToken       = errors.New("invalid token")
 	ErrorDataRepeat         = errors.New("data repeat")
 	ErrorParams             = errors.New("invalid params")
-	Error404                = errors.New("api not found")
-	Error500                = errors.New("server error")
 )
 
 func CheckErrorDB(i ...interface{}) error {
@@ -160,9 +161,13 @@ func IsErrorParams(err error) bool {
 }
 
 func IsError404(err error) bool {
-	return err == Error404
+	return err == echo.ErrNotFound
+}
+
+func IsError405(err error) bool {
+	return err == echo.ErrMethodNotAllowed
 }
 
 func IsError500(err error) bool {
-	return err == Error500
+	return err.Error() == echo.NewHTTPError(http.StatusInternalServerError).Error()
 }

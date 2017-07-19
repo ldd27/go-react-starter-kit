@@ -3,24 +3,16 @@ package routers
 import (
 	"net/http"
 
+	"fmt"
+
+	"github.com/jdongdong/go-lib/slog"
+	cus "github.com/jdongdong/go-react-starter-kit/middleware"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/modules/comStruct"
 	"github.com/jdongdong/go-react-starter-kit/routers/webapi"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
-
-type ResModel struct {
-	R       interface{} `json:"r"`
-	Success string      `json:"success"`
-	Code    int         `json:"code"`
-	Info    string      `json:"info"`
-}
-
-type PageResModel struct {
-	Data  interface{} `json:"data"`
-	Total int64       `json:"total"`
-}
 
 //func init() {
 //	ns := beego.NewNamespace("/v1",
@@ -39,11 +31,14 @@ func Init() *echo.Echo {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Gzip())
-	config := middleware.JWTConfig{
-		Claims:     &webapi.JwtCustomClaims{},
-		SigningKey: []byte("secret"),
-	}
-	e.Use(middleware.JWTWithConfig(config))
+	e.Use(cusContext)
+	e.Use(cus.ReqLogHandler())
+
+	//config := middleware.JWTConfig{
+	//	Claims:     &webapi.JwtCustomClaims{},
+	//	SigningKey: []byte("secret"),
+	//}
+	//e.Use(middleware.JWTWithConfig(config))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
@@ -52,40 +47,32 @@ func Init() *echo.Echo {
 
 	e.File("/", "static/index.html")
 
-	e.POST("/sysUser/login", webapi.Login)
+	e.POST("/sysUser/login", handleCusContext(webapi.Login))
 
-	api := e.Group("/api", func(h echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			tokenString := c.Request().Header.Get("x-access-token")
-			if tokenString == "" {
-				return errCode.ErrorInvalidToken
-			}
-			//token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			//	if token.Claims["uid"] != "admin" {
-			//		return nil, errors.New("User isvalid")
-			//	}
-			//	return []byte(SECUREKEY), nil
-			//})
-			//if err != nil {
-			//	return err
-			//}
-			//c.Set("Uid", token.Claims["uid"])
-			return h(c)
-		}
-	})
+	api := e.Group("/webApi", cus.JwtHandler())
 	{
-		api.GET("/sysLog/page", func(context echo.Context) error {
-			//req := new(models.SeaSysLog)
-			//panic("dd")
-			return context.String(http.StatusOK, "ddd")
-			//this.AutoPageDataRs(req.GetPaging())
-		})
+		api.GET("/sysLog/page", handleCusContext(webapi.GetPagingSysLog))
 	}
 
 	return e
 }
 
+func cusContext(h echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := &comStruct.CustomContext{Context: c}
+		return h(cc)
+	}
+}
+
+func handleCusContext(h comStruct.CusHandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(*comStruct.CustomContext)
+		return h(cc)
+	}
+}
+
 func errHandle(err error, c echo.Context) {
-	res := ResModel{Success: "F", Code: apiCode.FormatApiCode(err), Info: err.Error(), R: ""}
+	res := comStruct.ResModel{Success: "F", Code: apiCode.FormatApiCode(err), Info: err.Error(), R: ""}
+	slog.Debug(fmt.Sprintf("url:%s success:%s code:%d info:%s", c.Request().RequestURI, res.Success, res.Code, err.Error()))
 	c.JSON(http.StatusOK, res)
 }

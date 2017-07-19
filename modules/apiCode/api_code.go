@@ -5,6 +5,7 @@ import "github.com/jdongdong/go-react-starter-kit/modules/errCode"
 const (
 	Success             int = 0
 	PageNotFound            = 404
+	MethodNotAllowed        = 405
 	InternalServerError     = 500
 	Data_Null               = 1001
 	Invalid_Params          = 1002
@@ -33,6 +34,8 @@ func FormatApiCode(err error) int {
 		_code = Invalid_Params
 	} else if errCode.IsError404(err) {
 		_code = PageNotFound
+	} else if errCode.IsError405(err) {
+		_code = MethodNotAllowed
 	} else if errCode.IsError500(err) {
 		_code = InternalServerError
 	} else {
