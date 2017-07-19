@@ -1,0 +1,13 @@
+[deps]
+github.com/astaxie/beego = 
+github.com/go-ini/ini = 
+github.com/go-sql-driver/mysql = 
+github.com/go-xorm/core = 
+github.com/go-xorm/xorm = 
+github.com/jdongdong/go-lib = 
+github.com/labstack/echo = 
+github.com/pquerna/ffjson = 
+
+[res]
+include = static|conf
+

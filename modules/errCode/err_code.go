@@ -107,7 +107,7 @@ func IsErrorInvalidUser(err error) bool {
 	return err == ErrorInvalidUser
 }
 
-func CheckErrorInvalidJson(err error) error {
+func  CheckErrorInvalidJson(err error) error {
 	if err != nil {
 		pc, file, line, ok := runtime.Caller(2)
 		slog.Error(pc, file, line, ok, err)

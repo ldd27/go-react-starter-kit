@@ -46,11 +46,11 @@ func Init() *echo.Echo {
 	e.HTTPErrorHandler = errHandle
 
 	e.File("/", "static/index.html")
-
-	e.POST("/sysUser/login", handleCusContext(webapi.Login))
+	e.Static("/", "static")
 
 	api := e.Group("/webApi", cus.JwtHandler())
 	{
+		api.POST("/sysUser/login", handleCusContext(webapi.Login))
 		api.GET("/sysLog/page", handleCusContext(webapi.GetPagingSysLog))
 	}
 

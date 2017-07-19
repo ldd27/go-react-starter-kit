@@ -18,6 +18,9 @@ const (
 func JwtHandler() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			if c.Request().RequestURI == "/webApi/sysUser/login" {
+				return next(c)
+			}
 			tokenStr := c.Request().Header.Get(echo.HeaderAuthorization)
 			if tokenStr == "" {
 				return errCode.ErrorInvalidToken

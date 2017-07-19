@@ -6,3 +6,4 @@ gen_model.bat
 routers/commentsRouter_controllers.go
 lastupdate.tmp
 vendor/
+.vendor/

@@ -1,0 +1,23 @@
+package: github.com/jdongdong/go-react-starter-kit
+import:
+- package: github.com/astaxie/beego
+- package: github.com/go-ini/ini
+- package: github.com/go-sql-driver/mysql
+- package: github.com/go-xorm/core
+- package: github.com/go-xorm/xorm
+- package: github.com/jdongdong/go-lib
+  subpackages:
+  - base
+  - slog
+  - tool
+- package: github.com/labstack/echo
+  subpackages:
+  - middleware
+- package: github.com/pquerna/ffjson
+  subpackages:
+  - ffjson
+testImport:
+- package: github.com/smartystreets/goconvey
+  subpackages:
+  - convey
+

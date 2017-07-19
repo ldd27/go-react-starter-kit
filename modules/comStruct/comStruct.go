@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"encoding/json"
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
+	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
 	"github.com/labstack/echo"
 	"github.com/pquerna/ffjson/ffjson"
 )
@@ -72,4 +74,14 @@ func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
 		return err
 	}
 	return this.Success(i)
+}
+
+func (this *CustomContext) ToJson(i interface{}) error {
+	//body, err := ioutil.ReadAll(this.Request().Body)
+	//if err != nil {
+	//	return errCode.CheckErrorInvalidJson(err)
+	//}
+	//
+	//return errCode.CheckErrorInvalidJson(ffjson.Unmarshal(body, &i))
+	return errCode.CheckErrorInvalidJson(json.NewDecoder(this.Request().Body).Decode(i))
 }
