@@ -6,12 +6,12 @@ import (
 
 	"reflect"
 
-	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/pkg/setting"
 )
 
 var (
@@ -80,25 +80,25 @@ type DeleteTransInterface interface {
 
 func init() {
 	tables = append(tables, new(SysUser))
-	LoadConfig()
+	//LoadConfig()
 	err := NewEngine()
 	slog.Error(err)
 	err = x.Ping()
 	slog.Error(err)
 }
 
-func LoadConfig() {
-	DbCfg.Host = beego.AppConfig.DefaultString("mysqlhost", "localhost")
-	DbCfg.Port = beego.AppConfig.DefaultString("mysqlport", "3306")
-	DbCfg.User = beego.AppConfig.DefaultString("mysqluser", "root")
-	DbCfg.Pwd = beego.AppConfig.String("mysqlpass")
-	DbCfg.Db = beego.AppConfig.String("mysqldb")
-}
+//func LoadConfig() {
+//	DbCfg.Host = beego.AppConfig.DefaultString("mysqlhost", "localhost")
+//	DbCfg.Port = beego.AppConfig.DefaultString("mysqlport", "3306")
+//	DbCfg.User = beego.AppConfig.DefaultString("mysqluser", "root")
+//	DbCfg.Pwd = beego.AppConfig.String("mysqlpass")
+//	DbCfg.Db = beego.AppConfig.String("mysqldb")
+//}
 
 func getEngine() (*xorm.Engine, error) {
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", DbCfg.User, DbCfg.Pwd, DbCfg.Host, DbCfg.Port, DbCfg.Db)
-	slog.Info("conn:" + connStr)
-	return xorm.NewEngine("mysql", connStr)
+	//connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", DbCfg.User, DbCfg.Pwd, DbCfg.Host, DbCfg.Port, DbCfg.Db)
+	//slog.Info("conn:" + connStr)
+	return xorm.NewEngine("mysql", setting.MysqlCfg.Conn)
 }
 
 func SetEngine() (err error) {

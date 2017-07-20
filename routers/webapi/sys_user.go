@@ -1,7 +1,6 @@
 package webapi
 
 import (
-	"fmt"
 	"github.com/jdongdong/go-react-starter-kit/models"
 	"github.com/jdongdong/go-react-starter-kit/modules/comStruct"
 	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
@@ -10,10 +9,9 @@ import (
 func Login(c *comStruct.CustomContext) error {
 	req := new(models.SeaSysUser)
 
-	err := c.ToJson(req)
-	fmt.Println(err)
+	err := c.Bind(req)
 	if err != nil {
-		return errCode.ErrorParams
+		return errCode.ErrorInvalidJson
 	}
 
 	if req.LoginKey == "" || req.Password == "" {

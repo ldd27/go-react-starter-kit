@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"encoding/json"
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
 	"github.com/labstack/echo"
 	"github.com/pquerna/ffjson/ffjson"
 )
@@ -53,13 +51,19 @@ func (this *CustomContext) toResModel(err_code int, info string, r interface{}) 
 }
 
 func (this *CustomContext) Success(r interface{}) error {
-	this.JSON(http.StatusOK, this.toResModel(apiCode.Success, "", r))
-	return nil
+	vlu, err := ffjson.Marshal(this.toResModel(apiCode.Success, "", r))
+	if err != nil {
+		return err
+	}
+	return this.String(http.StatusOK, string(vlu))
 }
 
 func (this *CustomContext) Fail(err error) error {
-	this.JSON(http.StatusOK, this.toResModel(apiCode.FormatApiCode(err), err.Error(), nil))
-	return nil
+	vlu, err := ffjson.Marshal(this.toResModel(apiCode.FormatApiCode(err), err.Error(), nil))
+	if err != nil {
+		return err
+	}
+	return this.String(http.StatusOK, string(vlu))
 }
 
 func (this *CustomContext) AutoPageDataRs(i interface{}, total int64, err error) error {
@@ -76,12 +80,12 @@ func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
 	return this.Success(i)
 }
 
-func (this *CustomContext) ToJson(i interface{}) error {
-	//body, err := ioutil.ReadAll(this.Request().Body)
-	//if err != nil {
-	//	return errCode.CheckErrorInvalidJson(err)
-	//}
-	//
-	//return errCode.CheckErrorInvalidJson(ffjson.Unmarshal(body, &i))
-	return errCode.CheckErrorInvalidJson(json.NewDecoder(this.Request().Body).Decode(i))
-}
+//func (this *CustomContext) ToJson(i interface{}) error {
+//	//body, err := ioutil.ReadAll(this.Request().Body)
+//	//if err != nil {
+//	//	return errCode.CheckErrorInvalidJson(err)
+//	//}
+//	//
+//	//return errCode.CheckErrorInvalidJson(ffjson.Unmarshal(body, &i))
+//	return errCode.CheckErrorInvalidJson(json.NewDecoder(this.Request().Body).Decode(i))
+//}

@@ -2,7 +2,6 @@ package errCode
 
 import (
 	"errors"
-	"runtime"
 
 	"net/http"
 
@@ -32,8 +31,8 @@ func CheckErrorDB(i ...interface{}) error {
 		if !ok || err == nil {
 			return nil
 		}
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+
+		slog.Errorf(1, err)
 		return ErrorDB
 	} else {
 		if i[1] == nil {
@@ -44,8 +43,7 @@ func CheckErrorDB(i ...interface{}) error {
 			return nil
 		}
 
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+		slog.Errorf(1, err)
 		return ErrorDB
 	}
 }
@@ -63,8 +61,8 @@ func CheckErrorDataNull(i ...interface{}) error {
 		if !ok || err == nil {
 			return nil
 		}
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+
+		slog.Errorf(1, err)
 		return ErrorDataNull
 	} else {
 		if i[1] == nil {
@@ -79,9 +77,8 @@ func CheckErrorDataNull(i ...interface{}) error {
 				return nil
 			}
 
-			pc, file, line, ok := runtime.Caller(2)
-			slog.Error(pc, file, line, ok, err)
-			return ErrorDataNull
+			slog.Errorf(1, err)
+			return err
 		}
 	}
 }
@@ -92,12 +89,10 @@ func IsErrorDataNull(err error) bool {
 func CheckErrorInvalidUser(err error) error {
 	if err != nil {
 		if IsErrorDataNull(err) {
-			pc, file, line, ok := runtime.Caller(2)
-			slog.Error(pc, file, line, ok, err)
+			slog.Errorf(1, err)
 			return ErrorInvalidUser
 		} else {
-			pc, file, line, ok := runtime.Caller(2)
-			slog.Error(pc, file, line, ok, err)
+			slog.Errorf(1, err)
 			return ErrorDB
 		}
 	}
@@ -107,10 +102,9 @@ func IsErrorInvalidUser(err error) bool {
 	return err == ErrorInvalidUser
 }
 
-func  CheckErrorInvalidJson(err error) error {
+func CheckErrorInvalidJson(err error) error {
 	if err != nil {
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+		slog.Errorf(1, err)
 		return ErrorInvalidJson
 	}
 	return nil
@@ -121,8 +115,7 @@ func IsErrorInvalidJson(err error) bool {
 
 func CheckErrorInvalidToken(err error) error {
 	if err != nil {
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+		slog.Errorf(1, err)
 		return ErrorInvalidToken
 	}
 	return nil
@@ -133,13 +126,11 @@ func IsErrorInvalidToken(err error) bool {
 
 func CheckErrorDataRepeat(count int64, err error) error {
 	if err != nil {
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, count, err)
+		slog.Errorf(1, err)
 		return ErrorDB
 	}
 	if count > 0 {
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, count, err)
+		slog.Errorf(1, err)
 		return ErrorDataRepeat
 	}
 	return nil
@@ -150,8 +141,7 @@ func IsErrorDataRepeat(count int64, err error) bool {
 
 func CheckErrorParams(err error) error {
 	if err != nil {
-		pc, file, line, ok := runtime.Caller(2)
-		slog.Error(pc, file, line, ok, err)
+		slog.Errorf(1, err)
 		return ErrorParams
 	}
 	return nil

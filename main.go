@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/jdongdong/go-lib/slog"
+	"github.com/jdongdong/go-lib/tool"
 	"github.com/jdongdong/go-react-starter-kit/pkg/setting"
 	"github.com/jdongdong/go-react-starter-kit/routers"
-	"github.com/jdongdong/go-lib/tool"
 )
 
 func main() {

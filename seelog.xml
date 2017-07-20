@@ -28,6 +28,6 @@
         </filter>
     </outputs>
     <formats>
-        <format id="common" format="%Date(2006-01-02 15:04:05.000) [%l] %Func %Msg%n"/>
+        <format id="common" format="%Date(2006-01-02 15:04:05.000) [%l] %Msg%n"/>
     </formats>
 </seelog>

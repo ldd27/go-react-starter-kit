@@ -29,7 +29,7 @@ func Init() *echo.Echo {
 
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+	//e.Use(middleware.Logger())
 	e.Use(middleware.Gzip())
 	e.Use(cusContext)
 	e.Use(cus.ReqLogHandler())
