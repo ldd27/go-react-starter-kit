@@ -24,7 +24,9 @@
     "no-underscore-dangle": 0,
     "import/no-extraneous-dependencies": 0,
     "import/prefer-default-export": 0,
-    "global-require": 0
+    "global-require": 0,
+    "quotes": [1, "single"],
+     "jsx-quotes": [2, "prefer-single"]
   },
   "parser": "babel-eslint",
   "parserOptions": {

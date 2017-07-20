@@ -41,12 +41,23 @@ func Init() *echo.Echo {
 	//e.Use(middleware.JWTWithConfig(config))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding, echo.HeaderAuthorization},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 	e.HTTPErrorHandler = errHandle
 
 	e.File("/", "static/index.html")
 	e.Static("/", "static")
+
+	//e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+	//	return func(c echo.Context) (err error) {
+	//		if c.Request().Method == "Options" {
+	//			c.NoContent(200)
+	//			return
+	//		}
+	//		return next(c)
+	//	}
+	//})
 
 	api := e.Group("/webApi", cus.JwtHandler())
 	{

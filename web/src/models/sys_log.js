@@ -12,10 +12,10 @@ export default {
   },
 
   subscriptions: {
-    setup ({ dispatch, history }) {
-        dispatch({
-          type: 'query',
-        })
+    setup ({ dispatch }) {
+      dispatch({
+        type: 'query',
+      })
     },
   },
 

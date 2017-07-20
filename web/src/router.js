@@ -40,6 +40,15 @@ const Routers = function ({ history, app }) {
           },
         },
         {
+          path: 'sysLog',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/sys_log'))
+              cb(null, require('./routes/sys_log'))
+            }, 'sysLog')
+          },
+        },
+        {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

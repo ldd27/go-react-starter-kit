@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 import lodash from 'lodash'
 import { message } from 'antd'
+import moment from 'moment'
 import cookie from './cookie'
 import config from './config'
 import request from './request'
@@ -58,7 +59,7 @@ const get = (url, params) => {
     url,
     method: 'get',
     data: params,
-    headers: { token: cookie.getCookie(`${prefix}token`) },
+    headers: { Authorization: cookie.getCookie(`${prefix}token`) },
   })
 }
 
@@ -67,7 +68,7 @@ const post = (url, params) => {
     url,
     method: 'post',
     data: params,
-    headers: { token: cookie.getCookie(`${prefix}token`) },
+    headers: { Authorization: cookie.getCookie(`${prefix}token`) },
   })
 }
 
@@ -76,7 +77,7 @@ const put = (url, params) => {
     url,
     method: 'put',
     data: params,
-    headers: { token: cookie.getCookie(`${prefix}token`) },
+    headers: { Authorization: cookie.getCookie(`${prefix}token`) },
   })
 }
 
@@ -85,7 +86,7 @@ const remove = (url, params) => {
     url,
     method: 'delete',
     data: params,
-    headers: { token: cookie.getCookie(`${prefix}token`) },
+    headers: { Authorization: cookie.getCookie(`${prefix}token`) },
   })
 }
 
@@ -130,6 +131,24 @@ const queryURL = (name) => {
   return null
 }
 
+/**
+ * format
+ * 时间转化
+ * @export
+ * @param {any} origin
+ * @param {string} [format='YYYY-MM-DD HH:mm:ss']
+ * @param {any} originFormat 原始时间格式
+ * @returns
+ */
+export function formatDate (origin, format = 'YYYY-MM-DD HH:mm:ss', originFormat) {
+  if (!origin || origin.indexOf('0001-01-01') !== -1) return ''
+  let temp
+  if (originFormat) temp = moment(origin, originFormat)
+  else temp = moment(origin)
+  if (temp.isValid()) return temp.format(format)
+  return ''
+}
+
 module.exports = {
   config,
   request,
@@ -143,4 +162,5 @@ module.exports = {
   checkApiRs,
   cookie,
   queryURL,
+  formatDate,
 }

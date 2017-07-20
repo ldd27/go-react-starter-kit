@@ -17,7 +17,7 @@ func ReqLogHandler() echo.MiddlewareFunc {
 			body, _ := ioutil.ReadAll(request.Body)
 			request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
-			slog.Trace(fmt.Sprintf("url:%s body:%s", request.RequestURI, string(body)))
+			slog.Trace(fmt.Sprintf("url:%s method:%s body:%s", request.RequestURI, request.Method, string(body)))
 			return next(c)
 		}
 	}

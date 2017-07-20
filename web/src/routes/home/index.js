@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import Table from '../../components/table'
 
@@ -35,10 +36,14 @@ const Home = ({ sysLog }) => {
     dataSource: sysLog.dataSource,
   }
   return (
-    <div className="content-inner">
+    <div className='content-inner'>
       <Table {...tableProps} />
     </div>
   )
+}
+
+Home.propTypes = {
+  sysLog: PropTypes.shape,
 }
 
 export default connect(({ sysLog }) => ({ sysLog }))(Home)

@@ -1,14 +1,12 @@
 package webapi
 
 import (
-	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/models"
 	"github.com/jdongdong/go-react-starter-kit/modules/comStruct"
 )
 
 func GetPagingSysLog(c *comStruct.CustomContext) error {
 	req := new(models.SeaSysLog)
-	req.GetDtlPaging()
-	slog.Info(11111)
+	req.Title = c.QueryParam("title")
 	return c.AutoPageDataRs(req.GetPaging())
 }

@@ -40,7 +40,7 @@ const Login = ({
                 required: true,
               },
             ],
-          })(<Input size="large" onPressEnter={handleOk} placeholder="Username" />)}
+          })(<Input size='large' onPressEnter={handleOk} placeholder='Username' />)}
         </FormItem>
         <FormItem hasFeedback>
           {getFieldDecorator('Password', {
@@ -49,10 +49,10 @@ const Login = ({
                 required: true,
               },
             ],
-          })(<Input size="large" type="password" onPressEnter={handleOk} placeholder="Password" />)}
+          })(<Input size='large' type='password' onPressEnter={handleOk} placeholder='Password' />)}
         </FormItem>
         <Row>
-          <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
+          <Button type='primary' size='large' onClick={handleOk} loading={loginLoading}>
             登录
           </Button>
           <p>
