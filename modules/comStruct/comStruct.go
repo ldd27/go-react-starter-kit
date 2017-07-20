@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-xorm/xorm"
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
 	"github.com/labstack/echo"
@@ -89,3 +90,71 @@ func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
 //	//return errCode.CheckErrorInvalidJson(ffjson.Unmarshal(body, &i))
 //	return errCode.CheckErrorInvalidJson(json.NewDecoder(this.Request().Body).Decode(i))
 //}
+
+type SeaModel struct {
+	PageIndex    int `json:"pageIndex"`
+	PageSize     int `json:"pageSize"`
+	seaInterface SeaInterface
+}
+
+type SeaDtlModel struct {
+	seaDtlInterface SeaDtlInterface
+}
+
+type TreeModel struct {
+	Key      string      `json:"key"`
+	Title    string      `json:"title"`
+	Type     string      `json:"type"`
+	Checked  bool        `json:"checked"`
+	Children []TreeModel `json:"children"`
+}
+
+type LeftMenuModel struct {
+	Id     int64  `json:"id"`
+	Pid    int64  `json:"pid"`
+	MPid   int64  `json:"breadPid"`
+	Sort   int    `json:"sort"`
+	Name   string `json:"name"`
+	Icon   string `json:"icon"`
+	Router string `json:"router"`
+}
+
+type SeaInterface interface {
+	where(session *xorm.Session)
+}
+
+type SeaDtlInterface interface {
+	whereDtl(session *xorm.Session)
+}
+
+type PagingInterface interface {
+	GetPaging() (interface{}, int64, error)
+}
+
+type PagingDtlInterface interface {
+	GetDtlPaging() (interface{}, int64, error)
+}
+
+type InsertInterface interface {
+	Insert() error
+}
+
+type UpdateByIdInterface interface {
+	UpdateById() error
+}
+
+type DeleteByIdInterface interface {
+	DeleteById() error
+}
+
+type InsertTransInterface interface {
+	InsertTrans() error
+}
+
+type UpdateTransInterface interface {
+	UpdateTrans() error
+}
+
+type DeleteTransInterface interface {
+	DeleteTrans() error
+}

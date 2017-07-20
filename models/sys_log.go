@@ -15,14 +15,18 @@ type SeaSysLog struct {
 }
 
 type SysLogModel struct {
-	Id         int64
-	Type       string
-	Title      string
-	Info       string
-	OpUser     string
-	OpTime     time.Time
-	IpAddr     string
-	ReqUri     string
+	Id     int64
+	Type   string
+	Title  string
+	Info   string
+	OpUser string
+	OpTime time.Time
+	IpAddr string
+	ReqUri string
+}
+
+type SysLogDtlModel struct {
+	SysLogModel
 	OpUserName string
 }
 
@@ -39,17 +43,23 @@ func (this *SeaSysLog) where(session *xorm.Session) {
 	if this.OpUser != "" {
 		session.And("sys_log.op_user = ?", this.OpUser)
 	}
-	session.
-		Table("sys_log").
-		Join("LEFT", "sys_user", "sys_user.id = sys_log.op_user").
-		Desc("sys_log.op_time")
+	session.Table("sys_log").Desc("sys_log.op_time")
+}
 
+func (this *SeaSysLog) whereDtl(session *xorm.Session) {
+	session.Join("LEFT", "sys_user", "sys_user.id = sys_log.op_user")
 	session.Statement.ColumnStr = "sys_log.*, sys_user.user_name as op_user_name"
 }
 
 func (this *SeaSysLog) GetPaging() (interface{}, int64, error) {
 	items := make([]SysLogModel, this.PageSize)
 	count, err := this._getPaging(this, new(SysLog), &items)
+	return items, count, err
+}
+
+func (this *SeaSysLog) GetDtlPaging() (interface{}, int64, error) {
+	items := make([]SysLogModel, this.PageSize)
+	count, err := this._getDtlPaging(this, new(SysLog), &items)
 	return items, count, err
 }
 

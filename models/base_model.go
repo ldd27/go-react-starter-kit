@@ -50,6 +50,11 @@ type SeaInterface interface {
 	where(session *xorm.Session)
 }
 
+type SeaDtlInterface interface {
+	where(session *xorm.Session)
+	whereDtl(session *xorm.Session)
+}
+
 type PagingInterface interface {
 	GetPaging() (interface{}, int64, error)
 }
@@ -115,7 +120,7 @@ func SetEngine() (err error) {
 
 	x.ShowSQL(true)
 	//x.Logger().SetLevel(core.LOG_ERR)
-	x.Logger().SetLevel(core.LOG_DEBUG)
+	x.Logger().SetLevel(core.LOG_INFO)
 	return nil
 }
 
@@ -157,6 +162,24 @@ func (this *SeaModel) _getPaging(i SeaInterface, bean interface{}, item interfac
 	}
 	session2 := x.NewSession()
 	i.where(session2)
+	err = session2.
+		Limit(toPaging(this.PageIndex, this.PageSize)).
+		Find(item)
+	return total, errCode.CheckErrorDB(err)
+}
+
+func (this *SeaModel) _getDtlPaging(i SeaDtlInterface, bean interface{}, item interface{}) (int64, error) {
+	session := x.NewSession()
+	i.where(session)
+	i.whereDtl(session)
+
+	total, err := session.Count(bean)
+	if err := errCode.CheckErrorDB(err); err != nil {
+		return 0, err
+	}
+	session2 := x.NewSession()
+	i.where(session2)
+	i.whereDtl(session2)
 	err = session2.
 		Limit(toPaging(this.PageIndex, this.PageSize)).
 		Find(item)
