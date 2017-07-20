@@ -17,9 +17,6 @@ import (
 var (
 	x      *xorm.Engine
 	tables []interface{}
-	DbCfg  struct {
-		Host, Port, User, Pwd, Db string
-	}
 )
 
 type SeaModel struct {
@@ -92,22 +89,8 @@ func init() {
 	slog.Error(err)
 }
 
-//func LoadConfig() {
-//	DbCfg.Host = beego.AppConfig.DefaultString("mysqlhost", "localhost")
-//	DbCfg.Port = beego.AppConfig.DefaultString("mysqlport", "3306")
-//	DbCfg.User = beego.AppConfig.DefaultString("mysqluser", "root")
-//	DbCfg.Pwd = beego.AppConfig.String("mysqlpass")
-//	DbCfg.Db = beego.AppConfig.String("mysqldb")
-//}
-
-func getEngine() (*xorm.Engine, error) {
-	//connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", DbCfg.User, DbCfg.Pwd, DbCfg.Host, DbCfg.Port, DbCfg.Db)
-	//slog.Info("conn:" + connStr)
-	return xorm.NewEngine("mysql", setting.MysqlCfg.Conn)
-}
-
 func SetEngine() (err error) {
-	x, err = getEngine()
+	x, err = xorm.NewEngine("mysql", setting.MysqlCfg.Conn)
 	if err != nil {
 		return fmt.Errorf("fail to connect to database: %v", err)
 	}

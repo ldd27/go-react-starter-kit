@@ -50,7 +50,10 @@ func Init() *echo.Echo {
 
 	api := e.Group("/webApi", cus.JwtHandler())
 	{
+		api.GET("/sysUser/checkIsLogin", handleCusContext(webapi.CheckIsLogin))
 		api.POST("/sysUser/login", handleCusContext(webapi.Login))
+		api.POST("/sysUser/logout", handleCusContext(webapi.Logout))
+
 		api.GET("/sysLog/page", handleCusContext(webapi.GetPagingSysLog))
 	}
 

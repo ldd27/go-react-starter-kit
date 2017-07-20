@@ -20,3 +20,13 @@ func Login(c *comStruct.CustomContext) error {
 
 	return c.AutoDataRs(req.WebLogin())
 }
+
+func CheckIsLogin(c *comStruct.CustomContext) error {
+	req := new(models.SeaSysUser)
+	req.Id = c.UserID
+	return c.AutoDataRs(req.GetLoginByUserID())
+}
+
+func Logout(c *comStruct.CustomContext) error {
+	return c.Success(nil)
+}

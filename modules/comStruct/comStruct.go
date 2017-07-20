@@ -4,8 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-xorm/xorm"
+	"time"
+
+	"reflect"
+
 	"github.com/jdongdong/go-lib/slog"
+	"github.com/jdongdong/go-react-starter-kit/models"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
 	"github.com/labstack/echo"
 	"github.com/pquerna/ffjson/ffjson"
@@ -81,80 +85,73 @@ func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
 	return this.Success(i)
 }
 
-//func (this *CustomContext) ToJson(i interface{}) error {
-//	//body, err := ioutil.ReadAll(this.Request().Body)
-//	//if err != nil {
-//	//	return errCode.CheckErrorInvalidJson(err)
-//	//}
-//	//
-//	//return errCode.CheckErrorInvalidJson(ffjson.Unmarshal(body, &i))
-//	return errCode.CheckErrorInvalidJson(json.NewDecoder(this.Request().Body).Decode(i))
-//}
-
-type SeaModel struct {
-	PageIndex    int `json:"pageIndex"`
-	PageSize     int `json:"pageSize"`
-	seaInterface SeaInterface
+func (this *CustomContext) WriteLog(title string, info interface{}) {
+	log := new(models.SysLog)
+	log.Title = title
+	vlu, err := ffjson.Marshal(info)
+	if err == nil {
+		log.Info = string(vlu)
+	} else {
+		log.Info = fmt.Sprintf("%+v", info)
+	}
+	log.IpAddr = this.RealIP()
+	log.OpTime = time.Now()
+	log.OpUser = this.UserID
+	log.ReqUri = this.Request().RequestURI
+	log.Insert()
 }
 
-type SeaDtlModel struct {
-	seaDtlInterface SeaDtlInterface
+func (this *CustomContext) InsertRs(logTag string, req models.InsertInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("CreateBy").CanSet() {
+		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	if temp.FieldByName("UpdateBy").CanSet() {
+		temp.FieldByName("UpdateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	this.WriteLog(logTag, req)
+	return req.Insert()
 }
 
-type TreeModel struct {
-	Key      string      `json:"key"`
-	Title    string      `json:"title"`
-	Type     string      `json:"type"`
-	Checked  bool        `json:"checked"`
-	Children []TreeModel `json:"children"`
+func (this *CustomContext) UpdateRs(logTag string, req models.UpdateByIdInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("UpdateBy").CanSet() {
+		temp.FieldByName("UpdateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	this.WriteLog(logTag, req)
+	return req.UpdateById()
 }
 
-type LeftMenuModel struct {
-	Id     int64  `json:"id"`
-	Pid    int64  `json:"pid"`
-	MPid   int64  `json:"breadPid"`
-	Sort   int    `json:"sort"`
-	Name   string `json:"name"`
-	Icon   string `json:"icon"`
-	Router string `json:"router"`
+func (this *CustomContext) DeleteRs(logTag string, req models.DeleteByIdInterface) error {
+	this.WriteLog(logTag, req)
+	return req.DeleteById()
 }
 
-type SeaInterface interface {
-	where(session *xorm.Session)
+func (this *CustomContext) InsertTransRs(logTag string, req models.InsertTransInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("CreateBy").CanSet() {
+		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	if temp.FieldByName("UpdateBy").CanSet() {
+		temp.FieldByName("UpdateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	this.WriteLog(logTag, req)
+	return req.InsertTrans()
 }
 
-type SeaDtlInterface interface {
-	whereDtl(session *xorm.Session)
+func (this *CustomContext) UpdateTransRs(logTag string, req models.UpdateTransInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("CreateBy").CanSet() {
+		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	if temp.FieldByName("UpdateBy").CanSet() {
+		temp.FieldByName("UpdateBy").Set(reflect.ValueOf(this.UserID))
+	}
+	this.WriteLog(logTag, req)
+	return req.UpdateTrans()
 }
 
-type PagingInterface interface {
-	GetPaging() (interface{}, int64, error)
-}
-
-type PagingDtlInterface interface {
-	GetDtlPaging() (interface{}, int64, error)
-}
-
-type InsertInterface interface {
-	Insert() error
-}
-
-type UpdateByIdInterface interface {
-	UpdateById() error
-}
-
-type DeleteByIdInterface interface {
-	DeleteById() error
-}
-
-type InsertTransInterface interface {
-	InsertTrans() error
-}
-
-type UpdateTransInterface interface {
-	UpdateTrans() error
-}
-
-type DeleteTransInterface interface {
-	DeleteTrans() error
+func (this *CustomContext) DeleteTransRs(logTag string, req models.DeleteTransInterface) error {
+	this.WriteLog(logTag, req)
+	return req.DeleteTrans()
 }
