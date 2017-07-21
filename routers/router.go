@@ -47,7 +47,7 @@ func Init() *echo.Echo {
 	e.HTTPErrorHandler = errHandle
 
 	e.File("/", "static/index.html")
-	e.Static("/", "static")
+	e.Static("/static", "static")
 
 	//e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 	//	return func(c echo.Context) (err error) {

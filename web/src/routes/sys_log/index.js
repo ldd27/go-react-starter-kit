@@ -5,22 +5,21 @@ import { Input } from 'antd'
 import Table from './table'
 
 const Search = Input.Search
-const SysLog = ({ dispatch, sysLog }) => {
-  const { total, pageIndex, pageSize, dataSource, loading, title } = sysLog
+const SysLog = ({ dispatch, sysLog, loading }) => {
+  const { data, pagination, search } = sysLog
+  const { pageSize } = pagination
 
   const tableProps = {
-    dataSource,
-    loading,
-    total,
-    pageIndex,
-    pageSize,
-    onPageChange (page) {
-      dispatch({ type: 'sysLog/query', payload: { pageIndex: page, pageSize, title } })
+    dataSource: data,
+    pagination,
+    loading: loading.effects['sysLog/getPage'],
+    onChange (page) {
+      dispatch({ type: 'sysLog/getPage', payload: { current: page.current, pageSize: page.pageSize, search } })
     },
   }
 
-  const onSearch = (value) => {
-    dispatch({ type: 'sysLog/query', payload: { pageIndex, pageSize, title: value } })
+  const onSearch = (title) => {
+    dispatch({ type: 'sysLog/getPage', payload: { current: 1, pageSize, search: { title } } })
   }
 
   return (
@@ -34,6 +33,7 @@ const SysLog = ({ dispatch, sysLog }) => {
 SysLog.propTypes = {
   sysLog: PropTypes.shape,
   dispatch: PropTypes.func,
+  loading: PropTypes.shape,
 }
 
-export default connect(({ sysLog }) => ({ sysLog }))(SysLog)
+export default connect(({ sysLog, loading }) => ({ sysLog, loading }))(SysLog)

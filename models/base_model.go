@@ -20,8 +20,8 @@ var (
 )
 
 type SeaModel struct {
-	PageIndex    int `json:"pageIndex"`
-	PageSize     int `json:"pageSize"`
+	Page         int `json:"page"`
+	Size         int `json:"size"`
 	seaInterface SeaInterface
 }
 
@@ -123,15 +123,15 @@ func toLike(s string) string {
 	return fmt.Sprintf("%%%s%%", s)
 }
 
-func toPaging(pageIndex, pageSize int) (limit, start int) {
-	if pageIndex <= 0 {
-		pageIndex = 1
+func toPaging(page, size int) (limit, start int) {
+	if page <= 0 {
+		page = 1
 	}
-	if pageSize <= 0 {
-		pageSize = 10
+	if size <= 0 {
+		size = 10
 	}
-	limit = pageSize
-	start = (pageIndex - 1) * pageSize
+	limit = size
+	start = (page - 1) * size
 	return limit, start
 }
 
@@ -146,7 +146,7 @@ func (this *SeaModel) _getPaging(i SeaInterface, bean interface{}, item interfac
 	session2 := x.NewSession()
 	i.where(session2)
 	err = session2.
-		Limit(toPaging(this.PageIndex, this.PageSize)).
+		Limit(toPaging(this.Page, this.Size)).
 		Find(item)
 	return total, errCode.CheckErrorDB(err)
 }
@@ -164,7 +164,7 @@ func (this *SeaModel) _getDtlPaging(i SeaDtlInterface, bean interface{}, item in
 	i.where(session2)
 	i.whereDtl(session2)
 	err = session2.
-		Limit(toPaging(this.PageIndex, this.PageSize)).
+		Limit(toPaging(this.Page, this.Size)).
 		Find(item)
 	return total, errCode.CheckErrorDB(err)
 }

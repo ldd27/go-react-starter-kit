@@ -124,7 +124,7 @@ func (this *SeaSysUser) where(session *xorm.Session) {
 }
 
 func (this *SeaSysUser) GetPaging() (interface{}, int64, error) {
-	items := make([]SysUserModel, 0, this.PageSize)
+	items := make([]SysUserModel, 0, this.Size)
 	count, err := this._getPaging(this, new(SysUser), &items)
 	return items, count, err
 }

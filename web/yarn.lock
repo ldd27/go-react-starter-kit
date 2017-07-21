@@ -965,7 +965,7 @@ babel-register@^6.18.0, babel-register@^6.24.1:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@6.x, babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.9.2:
+babel-runtime@6.x, babel-runtime@^6.11.6, babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.9.2:
   version "6.23.0"
   resolved "http://registry.npm.taobao.org/babel-runtime/download/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -1738,6 +1738,12 @@ dva-loading@^0.2.1:
   resolved "http://registry.npm.taobao.org/dva-loading/download/dva-loading-0.2.1.tgz#fad76b8eeb28c3663a2ee1874cc118702940c63c"
   dependencies:
     babel-runtime "^6.11.6"
+
+dva-model-extend@^0.1.1:
+  version "0.1.1"
+  resolved "http://registry.npm.taobao.org/dva-model-extend/download/dva-model-extend-0.1.1.tgz#fcfe6ecb0b019843a875f87203f589448aebafbd"
+  dependencies:
+    babel-runtime "^6.20.0"
 
 dva@^1.2.1:
   version "1.2.1"

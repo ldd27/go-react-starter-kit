@@ -1,7 +1,40 @@
-// 公有state
-const comState = {
-  table: {
-    loading: false,
+import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
+
+const model = {
+  reducers: {
+    updateState (state, { payload }) {
+      return { ...state, ...payload }
+    },
+  },
+}
+
+const comModel = modelExtend(model, {
+  state: {
+    data: [],
+    search: {},
+    currentItem: {},
+    modalVisible: false,
+    modalType: 'create',
+  },
+  reducers: {
+    success (state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
+    showModal (state, { payload }) {
+      return { ...state, ...payload, modalVisible: true }
+    },
+    hideModal (state, { payload }) {
+      return { ...state, ...payload, modalVisible: false }
+    },
+  },
+})
+
+const comPageModel = modelExtend(comModel, {
+  state: {
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -10,78 +43,155 @@ const comState = {
       pageSize: 10,
       total: 0,
     },
-    datas: [],
   },
-  search: {},
-  currentItem: {},
-  modal: {
-    visible: false,
-    type: 'create',
-    loading: false,
-  },
-}
-// 公用reducer
-const comReducer = {
-  showLoading (state, action) {
-    return { ...state, ...action.payload, 'table.loading': true }
-  },
-  success (state, action) {
-    return { ...state, ...action.payload, 'table.loading': false }
-  },
-  fail (state, action) {
-    return { ...state, ...action.payload, 'table.loading': false }
-  },
-  showModal (state, action) {
-    return { ...state, ...action.payload, 'modal.visible': true }
-  },
-  hideModal (state, action) {
-    return { ...state, ...action.payload, 'modal.visible': false }
-  },
-  update (state, action) {
-    return { ...state, ...action.payload }
-  },
-}
-
-
-/**
- * base model
- * @param {any} namespace
- * @param {any} state
- * @param {any} effects
- * @param {any} setup
- * @param {any} reducers
- * @returns
- */
-function comModel (namespace, state, effects, setup, reducers) {
-  return {
-    namespace,
-    state: {
-      ...comState,
-      ...state,
+  reducers: {
+    success (state, { payload }) {
+      const { data, pagination } = payload
+      return {
+        ...state,
+        data,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
     },
+  },
+})
+
+function genComModel (namespace, service, state = {}, effects, setup, reducers) {
+  return modelExtend(comModel, {
+    namespace,
+    state,
     subscriptions: {
       setup ({ dispatch, history }) {
         if (!setup) {
           history.listen((location) => {
             if (location.pathname === `/${namespace}`) {
-              dispatch({ type: 'getPaging', payload: { pageIndex: 1, pageSize: 10 } })
+              dispatch({ type: 'get' })
             }
           })
         } else {
-          setup({ dispatch, history })
+          setup(dispatch, history)
         }
       },
     },
     effects: {
+      * get ({ payload = {} }, { call, put }) {
+        const data = yield call(service.getSvc, { ...payload.search })
+        if (data) {
+          yield put({ type: 'success',
+            payload: { data: data.data,
+              search: payload.search,
+            },
+          })
+        }
+      },
       ...effects,
     },
-    reducers: {
-      ...comReducer,
-      ...reducers,
+    reducers,
+  })
+}
+
+function genComPageModel (namespace, service, state = {}, effects, setup, reducers) {
+  return modelExtend(comPageModel, {
+    namespace,
+    state,
+    subscriptions: {
+      setup ({ dispatch, history }) {
+        if (!setup) {
+          history.listen((location) => {
+            if (location.pathname === `/${namespace}`) {
+              dispatch({ type: 'getPage' })
+            }
+          })
+        } else {
+          setup(dispatch, history)
+        }
+      },
     },
-  }
+    effects: {
+      * getPage ({ payload = { current: 1, pageSize: 10 } }, { call, put }) {
+        const data = yield call(service.getPageSvc, { page: payload.current, size: payload.pageSize, ...payload.search })
+        if (data) {
+          yield put({ type: 'success',
+            payload: { data: data.r.data,
+              search: payload.search,
+              pagination: {
+                total: data.r.total,
+                current: payload.current,
+                pageSize: payload.pageSize,
+              },
+            },
+          })
+        }
+      },
+      ...effects,
+    },
+    reducers,
+  })
 }
 
-function comCRUDModel (namespace, state, service, effects, setup, reducers) {
-
+function genCRUDComModel (namespace, service, state = {}, effects, setup, reducers) {
+  return modelExtend(genComModel(namespace, service, state, effects, setup, reducers), {
+    effects: {
+      * create ({ payload }, { call, put }) {
+        const data = yield call(service.addSvc, payload.data)
+        if (data) {
+          message.success('保存成功', 3)
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'get' })
+        }
+      },
+      * update ({ payload }, { call, put }) {
+        const data = yield call(service.uptSvc, payload.data)
+        if (data) {
+          message.success('保存成功', 3)
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'get' })
+        }
+      },
+      * remove ({ payload }, { call, put }) {
+        const data = yield call(service.delSvc, payload)
+        if (data) {
+          message.success('删除成功', 3)
+          yield put({ type: 'get' })
+        }
+      },
+    },
+    reducers,
+  })
 }
+
+function genCRUDComPageModel (namespace, service, state = {}, effects, setup, reducers) {
+  return modelExtend(genComPageModel(namespace, service, state, effects, setup, reducers), {
+    effects: {
+      * create ({ payload }, { call, put }) {
+        const data = yield call(service.addSvc, payload.data)
+        if (data) {
+          message.success('保存成功', 3)
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'getPage' })
+        }
+      },
+      * update ({ payload }, { call, put }) {
+        const data = yield call(service.uptSvc, payload.data)
+        if (data) {
+          message.success('保存成功', 3)
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'getPage' })
+        }
+      },
+      * remove ({ payload }, { call, put }) {
+        const data = yield call(service.delSvc, payload)
+        if (data) {
+          message.success('删除成功', 3)
+          yield put({ type: 'getPage' })
+        }
+      },
+    },
+    reducers,
+  })
+}
+
+export { model, comModel, comPageModel, genComModel, genComPageModel, genCRUDComModel, genCRUDComPageModel }

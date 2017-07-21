@@ -52,13 +52,13 @@ func (this *SeaSysLog) whereDtl(session *xorm.Session) {
 }
 
 func (this *SeaSysLog) GetPaging() (interface{}, int64, error) {
-	items := make([]SysLogModel, this.PageSize)
+	items := make([]SysLogModel, this.Size)
 	count, err := this._getPaging(this, new(SysLog), &items)
 	return items, count, err
 }
 
 func (this *SeaSysLog) GetDtlPaging() (interface{}, int64, error) {
-	items := make([]SysLogDtlModel, this.PageSize)
+	items := make([]SysLogDtlModel, this.Size)
 	count, err := this._getDtlPaging(this, new(SysLog), &items)
 	return items, count, err
 }

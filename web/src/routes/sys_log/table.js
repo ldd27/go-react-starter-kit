@@ -33,12 +33,6 @@ const Table = ({ ...tableProps }) => {
     columns,
     rowKey: record => record.Id,
     expandedRowRender: record => record.Info,
-    pagination: {
-      total: tableProps.total,
-      pageSize: tableProps.pageSize,
-      defaultCurrent: 1,
-      current: tableProps.pageIndex,
-    },
   }
 
   return (

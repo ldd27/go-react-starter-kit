@@ -1,5 +1,5 @@
 import { get } from '../utils'
 
-export async function getPagingService (params) {
+export async function getPageSvc (params) {
   return get('sysLog/page', params)
 }
