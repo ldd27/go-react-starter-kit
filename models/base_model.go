@@ -25,6 +25,11 @@ type SeaModel struct {
 	seaInterface SeaInterface
 }
 
+type SeaDtlModel struct {
+	SeaModel
+	seaDtlInterface SeaDtlInterface
+}
+
 type TreeModel struct {
 	Key      string      `json:"key"`
 	Title    string      `json:"title"`

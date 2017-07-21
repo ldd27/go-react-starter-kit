@@ -1,5 +1,37 @@
 import modelExtend from 'dva-model-extend'
 import { message } from 'antd'
+import cookie from './cookie'
+import config from './config'
+
+const { prefix } = config
+const checkApiRs = (rs) => {
+  switch (rs.code) {
+    case 1003:
+      cookie.delCookie(`${prefix}username`)
+      cookie.delCookie(`${prefix}token`)
+      cookie.delCookie(`${prefix}menu`)
+      if (location.pathname !== '/login') {
+        let from = location.pathname
+        if (location.pathname === '/home') {
+          from = '/home'
+        }
+        window.location = `${location.origin}/login?from=${from}`
+      }
+      break
+    case 1002:
+      message.warn('非法参数，请重新输入', 3)
+      break
+    case 2001:
+      message.warn('用户名密码错误，请重新输入', 3)
+      break
+    case 2002:
+      message.warn('原密码错误，请重新输入', 3)
+      break
+    default:
+      message.error('服务器繁忙', 3)
+      break
+  }
+}
 
 const model = {
   reducers: {
@@ -36,8 +68,8 @@ const comModel = modelExtend(model, {
 const comPageModel = modelExtend(comModel, {
   state: {
     pagination: {
-      showSizeChanger: true,
-      showQuickJumper: true,
+      showSizeChanger: false,
+      showQuickJumper: false,
       showTotal: total => `总共 ${total} 条数据`,
       current: 1,
       pageSize: 10,
@@ -79,12 +111,14 @@ function genComModel (namespace, service, state = {}, effects, setup, reducers) 
     effects: {
       * get ({ payload = {} }, { call, put }) {
         const data = yield call(service.getSvc, { ...payload.search })
-        if (data) {
+        if (data.success) {
           yield put({ type: 'success',
             payload: { data: data.data,
               search: payload.search,
             },
           })
+        } else {
+          checkApiRs(data)
         }
       },
       ...effects,
@@ -113,7 +147,7 @@ function genComPageModel (namespace, service, state = {}, effects, setup, reduce
     effects: {
       * getPage ({ payload = { current: 1, pageSize: 10 } }, { call, put }) {
         const data = yield call(service.getPageSvc, { page: payload.current, size: payload.pageSize, ...payload.search })
-        if (data) {
+        if (data.success) {
           yield put({ type: 'success',
             payload: { data: data.r.data,
               search: payload.search,
@@ -124,6 +158,8 @@ function genComPageModel (namespace, service, state = {}, effects, setup, reduce
               },
             },
           })
+        } else {
+          checkApiRs(data)
         }
       },
       ...effects,
@@ -137,25 +173,31 @@ function genCRUDComModel (namespace, service, state = {}, effects, setup, reduce
     effects: {
       * create ({ payload }, { call, put }) {
         const data = yield call(service.addSvc, payload.data)
-        if (data) {
+        if (data.success) {
           message.success('保存成功', 3)
           yield put({ type: 'hideModal' })
           yield put({ type: 'get' })
+        } else {
+          checkApiRs(data)
         }
       },
       * update ({ payload }, { call, put }) {
         const data = yield call(service.uptSvc, payload.data)
-        if (data) {
+        if (data.success) {
           message.success('保存成功', 3)
           yield put({ type: 'hideModal' })
           yield put({ type: 'get' })
+        } else {
+          checkApiRs(data)
         }
       },
       * remove ({ payload }, { call, put }) {
         const data = yield call(service.delSvc, payload)
-        if (data) {
+        if (data.success) {
           message.success('删除成功', 3)
           yield put({ type: 'get' })
+        } else {
+          checkApiRs(data)
         }
       },
     },
@@ -168,25 +210,31 @@ function genCRUDComPageModel (namespace, service, state = {}, effects, setup, re
     effects: {
       * create ({ payload }, { call, put }) {
         const data = yield call(service.addSvc, payload.data)
-        if (data) {
+        if (data.success) {
           message.success('保存成功', 3)
           yield put({ type: 'hideModal' })
           yield put({ type: 'getPage' })
+        } else {
+          checkApiRs(data)
         }
       },
       * update ({ payload }, { call, put }) {
         const data = yield call(service.uptSvc, payload.data)
-        if (data) {
+        if (data.success) {
           message.success('保存成功', 3)
           yield put({ type: 'hideModal' })
           yield put({ type: 'getPage' })
+        } else {
+          checkApiRs(data)
         }
       },
       * remove ({ payload }, { call, put }) {
         const data = yield call(service.delSvc, payload)
-        if (data) {
+        if (data.success) {
           message.success('删除成功', 3)
           yield put({ type: 'getPage' })
+        } else {
+          checkApiRs(data)
         }
       },
     },

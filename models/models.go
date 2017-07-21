@@ -4,8 +4,25 @@ import (
 	"time"
 )
 
+type DictIndex struct {
+	DictCode string `xorm:"not null pk VARCHAR(10)"`
+	DictName string `xorm:"not null unique VARCHAR(50)"`
+	DictType string `xorm:"not null VARCHAR(20)"`
+	IsSys    string `xorm:"VARCHAR(1)"`
+	Status   string `xorm:"not null VARCHAR(2)"`
+}
+
+type DictItem struct {
+	Id       int    `xorm:"not null pk autoincr INT(11)"`
+	ItemCode string `xorm:"not null unique(item_code) VARCHAR(10)"`
+	ItemName string `xorm:"not null VARCHAR(50)"`
+	DictCode string `xorm:"not null index unique(item_code) VARCHAR(10)"`
+	IsSys    string `xorm:"VARCHAR(1)"`
+	Status   string `xorm:"not null VARCHAR(2)"`
+}
+
 type SysLog struct {
-	Id     int64     `xorm:"pk autoincr BIGINT(20)"`
+	Id     int64     `xorm:"BIGINT(20)"`
 	Type   string    `xorm:"VARCHAR(20)"`
 	Title  string    `xorm:"VARCHAR(100)"`
 	Info   string    `xorm:"VARCHAR(2000)"`
@@ -16,7 +33,7 @@ type SysLog struct {
 }
 
 type SysMenu struct {
-	Id       int64  `xorm:"pk BIGINT(20)"`
+	Id       int64  `xorm:"BIGINT(20)"`
 	Pid      int64  `xorm:"not null BIGINT(20)"`
 	BreadPid int64  `xorm:"BIGINT(20)"`
 	Name     string `xorm:"not null VARCHAR(50)"`
@@ -50,7 +67,7 @@ type SysRoleUser struct {
 }
 
 type SysToken struct {
-	Id         int64     `xorm:"pk autoincr BIGINT(20)"`
+	Id         int64     `xorm:"BIGINT(20)"`
 	UserId     string    `xorm:"index VARCHAR(32)"`
 	Token      string    `xorm:"TEXT"`
 	Status     string    `xorm:"VARCHAR(2)"`
