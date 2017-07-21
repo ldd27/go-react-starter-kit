@@ -56,6 +56,10 @@ type PagingInterface interface {
 	GetPaging() (interface{}, int64, error)
 }
 
+type PagingDtlInterface interface {
+	GetDtlPaging() (interface{}, int64, error)
+}
+
 type InsertInterface interface {
 	Insert() error
 }

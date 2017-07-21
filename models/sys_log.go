@@ -26,8 +26,8 @@ type SysLogModel struct {
 }
 
 type SysLogDtlModel struct {
-	SysLogModel
-	OpUserName string
+	SysLogModel `xorm:"extends"`
+	OpUserName  string
 }
 
 func (this *SeaSysLog) where(session *xorm.Session) {
@@ -52,13 +52,13 @@ func (this *SeaSysLog) whereDtl(session *xorm.Session) {
 }
 
 func (this *SeaSysLog) GetPaging() (interface{}, int64, error) {
-	items := make([]SysLogModel, this.Size)
+	items := make([]SysLogModel, 0, this.Size)
 	count, err := this._getPaging(this, new(SysLog), &items)
 	return items, count, err
 }
 
 func (this *SeaSysLog) GetDtlPaging() (interface{}, int64, error) {
-	items := make([]SysLogDtlModel, this.Size)
+	items := make([]SysLogDtlModel, 0, this.Size)
 	count, err := this._getDtlPaging(this, new(SysLog), &items)
 	return items, count, err
 }

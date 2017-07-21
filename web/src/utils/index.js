@@ -5,6 +5,7 @@ import moment from 'moment'
 import cookie from './cookie'
 import config from './config'
 import request from './request'
+import { model, comModel, comPageModel, genComModel, genComPageModel, genCRUDComModel, genCRUDComPageModel } from './base_model'
 
 const { prefix } = config
 
@@ -163,4 +164,11 @@ module.exports = {
   cookie,
   queryURL,
   formatDate,
+  model,
+  comModel,
+  comPageModel,
+  genComModel,
+  genComPageModel,
+  genCRUDComModel,
+  genCRUDComPageModel,
 }

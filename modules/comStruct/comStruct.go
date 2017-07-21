@@ -8,6 +8,8 @@ import (
 
 	"reflect"
 
+	"strconv"
+
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/models"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
@@ -101,6 +103,28 @@ func (this *CustomContext) WriteLog(title string, info interface{}) {
 	log.Insert()
 }
 
+func (this *CustomContext) PageRs(req models.PagingInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("Page").CanSet() {
+		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("page"), 1)))
+	}
+	if temp.FieldByName("Size").CanSet() {
+		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("size"), 10)))
+	}
+	return this.AutoPageDataRs(req.GetPaging())
+}
+
+func (this *CustomContext) PageDtlRs(req models.PagingDtlInterface) error {
+	temp := reflect.ValueOf(req).Elem()
+	if temp.FieldByName("Page").CanSet() {
+		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("page"), 1)))
+	}
+	if temp.FieldByName("Size").CanSet() {
+		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("size"), 10)))
+	}
+	return this.AutoPageDataRs(req.GetDtlPaging())
+}
+
 func (this *CustomContext) InsertRs(logTag string, req models.InsertInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("CreateBy").CanSet() {
@@ -154,4 +178,32 @@ func (this *CustomContext) UpdateTransRs(logTag string, req models.UpdateTransIn
 func (this *CustomContext) DeleteTransRs(logTag string, req models.DeleteTransInterface) error {
 	this.WriteLog(logTag, req)
 	return req.DeleteTrans()
+}
+
+func (this *CustomContext) ToIntEx(s string, defaultVlu ...int) int {
+	if rs, err := this.ToInt(s); err == nil {
+		return rs
+	} else if len(defaultVlu) > 0 {
+		return defaultVlu[0]
+	} else {
+		return 0
+	}
+}
+
+func (this *CustomContext) ToInt64Ex(s string, defaultVlu ...int64) int64 {
+	if rs, err := this.ToInt64(s); err == nil {
+		return rs
+	} else if len(defaultVlu) > 0 {
+		return defaultVlu[0]
+	} else {
+		return 0
+	}
+}
+
+func (this *CustomContext) ToInt(s string) (int, error) {
+	return strconv.Atoi(s)
+}
+
+func (this *CustomContext) ToInt64(s string) (int64, error) {
+	return strconv.ParseInt(s, 10, 64)
 }

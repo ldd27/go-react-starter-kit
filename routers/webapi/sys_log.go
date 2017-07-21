@@ -8,5 +8,5 @@ import (
 func GetPagingSysLog(c *comStruct.CustomContext) error {
 	req := new(models.SeaSysLog)
 	req.Title = c.QueryParam("title")
-	return c.AutoPageDataRs(req.GetPaging())
+	return c.PageDtlRs(req)
 }

@@ -19,7 +19,7 @@ const DDTable = ({ page, isMotion, ...tableProps }) => {
       {...tableProps}
       className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
       bordered
-      scroll={{ x: 1250 }}
+      scroll={{ x: 1024 }}
       simple
       size={'middle'}
       getBodyWrapper={getBodyWrapper}
