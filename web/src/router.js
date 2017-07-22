@@ -49,6 +49,15 @@ const Routers = function ({ history, app }) {
           },
         },
         {
+          path: 'dict',
+          getComponent (nextState, cb) {
+            require.ensure([], (require) => {
+              registerModel(app, require('./models/dict'))
+              cb(null, require('./routes/dict'))
+            }, 'dict')
+          },
+        },
+        {
           path: '*',
           getComponent (nextState, cb) {
             require.ensure([], (require) => {

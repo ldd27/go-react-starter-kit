@@ -2,7 +2,10 @@ package models
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/go-xorm/xorm"
+	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
 )
 
 type SeaDictIndex struct {
@@ -69,7 +72,7 @@ func (this *SeaDictItem) where(session *xorm.Session) {
 	if this.Valid {
 		session.And("a.status = 'aa' and a.dict_code in (select dict_code from dict_index and dict_index.status='aa' and dict_index.dict_code=?)", this.DictCode)
 	}
-	session.Table("dict_item").Alias("a").Asc("dict_index.item_code")
+	session.Table("dict_item").Alias("a").Asc("a.item_code")
 }
 
 func (this *SeaDictItem) GetValidItemsByCode() ([]DictItem, error) {
@@ -81,4 +84,32 @@ func (this *SeaDictItem) GetValidItemsByCode() ([]DictItem, error) {
 func (this *SeaDictItem) GetAll() ([]DictItem, error) {
 	items := make([]DictItem, 0)
 	return items, this._getAll(this, &items)
+}
+
+func (this *DictItem) Insert() error {
+	var maxID int64 = 1
+	rs, err := x.Query("select max(item_code) as max from dict_item where dict_code=?", this.DictCode)
+	if err != nil {
+		return errCode.CheckErrorDB(err)
+	}
+	for k, v := range rs[0] {
+		if k == "max" {
+			id, err := strconv.ParseInt(string(v), 10, 32)
+			if err != nil {
+				return errCode.CheckErrorDB(err)
+			}
+			maxID = id + 1
+		}
+	}
+	this.IsSys = "n"
+	this.ItemCode = fmt.Sprintf("%03d", maxID)
+	return _insert(this)
+}
+
+func (this *DictItem) UpdateById() error {
+	return _uptByID(this.Id, this)
+}
+
+func (this *DictItem) DeleteById() error {
+	return _delByID(this.Id, new(DictItem))
 }

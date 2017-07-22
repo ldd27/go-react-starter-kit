@@ -6,14 +6,16 @@ import AnimTableBody from './AnimTableBody'
 import styles from './index.less'
 
 const DDTable = ({ page, isMotion, ...tableProps }) => {
-
   const getBodyWrapperProps = {
     page,
-    current: tableProps.pagination.current,
+    current: tableProps.pagination ? tableProps.pagination.current : null,
   }
 
   const getBodyWrapper = (body) => { return isMotion ? <AnimTableBody {...getBodyWrapperProps} body={body} /> : body }
-
+  tableProps = {
+    ...tableProps,
+    pagination: tableProps.pagination ? tableProps.pagination : false,
+  }
   return (
     <Table
       {...tableProps}

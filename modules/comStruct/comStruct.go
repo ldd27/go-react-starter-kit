@@ -13,6 +13,7 @@ import (
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/models"
 	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
+	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
 	"github.com/labstack/echo"
 	"github.com/pquerna/ffjson/ffjson"
 )
@@ -106,10 +107,10 @@ func (this *CustomContext) WriteLog(title string, info interface{}) {
 func (this *CustomContext) PageRs(req models.PagingInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("Page").CanSet() {
-		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("page"), 1)))
+		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx("page", 1)))
 	}
 	if temp.FieldByName("Size").CanSet() {
-		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("size"), 10)))
+		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx("size", 10)))
 	}
 	return this.AutoPageDataRs(req.GetPaging())
 }
@@ -117,10 +118,10 @@ func (this *CustomContext) PageRs(req models.PagingInterface) error {
 func (this *CustomContext) PageDtlRs(req models.PagingDtlInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("Page").CanSet() {
-		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("page"), 1)))
+		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx("page", 1)))
 	}
 	if temp.FieldByName("Size").CanSet() {
-		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx(this.QueryParam("size"), 10)))
+		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx("size", 10)))
 	}
 	return this.AutoPageDataRs(req.GetDtlPaging())
 }
@@ -201,9 +202,21 @@ func (this *CustomContext) ToInt64Ex(s string, defaultVlu ...int64) int64 {
 }
 
 func (this *CustomContext) ToInt(s string) (int, error) {
-	return strconv.Atoi(s)
+	i, err := strconv.Atoi(this.QueryParam(s))
+	if err = errCode.CheckErrorParams(err); err != nil {
+		return 0, err
+	}
+	return i, nil
 }
 
 func (this *CustomContext) ToInt64(s string) (int64, error) {
-	return strconv.ParseInt(s, 10, 64)
+	i, err := strconv.ParseInt(this.QueryParam(s), 10, 64)
+	if err = errCode.CheckErrorParams(err); err != nil {
+		return 0, err
+	}
+	return i, nil
+}
+
+func (this *CustomContext) BindEx(i interface{}) error {
+	return errCode.CheckErrorInvalidJson(this.Bind(i))
 }

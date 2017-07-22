@@ -66,6 +66,13 @@ func Init() *echo.Echo {
 		api.POST("/sysUser/logout", handleCusContext(webapi.Logout))
 
 		api.GET("/sysLog/page", handleCusContext(webapi.GetPagingSysLog))
+
+		api.GET("/dictIndex/tree", handleCusContext(webapi.GetDictIndexTree))
+		api.GET("/dictItem/valid", handleCusContext(webapi.GetValidDictItemsByCode))
+		api.GET("/dictItem", handleCusContext(webapi.GetDictItems))
+		api.POST("/dictItem", handleCusContext(webapi.AddDictItem))
+		api.PUT("/dictItem", handleCusContext(webapi.EditDictItem))
+		api.DELETE("/dictItem", handleCusContext(webapi.DelDictItem))
 	}
 
 	return e

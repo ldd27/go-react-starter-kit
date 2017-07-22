@@ -78,10 +78,10 @@ const comPageModel = modelExtend(comModel, {
   },
   reducers: {
     success (state, { payload }) {
-      const { data, pagination } = payload
+      const { pagination } = payload
       return {
         ...state,
-        data,
+        ...payload,
         pagination: {
           ...state.pagination,
           ...pagination,
@@ -104,7 +104,7 @@ function genComModel (namespace, service, state = {}, effects, setup, reducers) 
             }
           })
         } else {
-          setup(dispatch, history)
+          setup({ dispatch, history })
         }
       },
     },
@@ -113,7 +113,7 @@ function genComModel (namespace, service, state = {}, effects, setup, reducers) 
         const data = yield call(service.getSvc, { ...payload.search })
         if (data.success) {
           yield put({ type: 'success',
-            payload: { data: data.data,
+            payload: { data: data.r,
               search: payload.search,
             },
           })
@@ -140,7 +140,7 @@ function genComPageModel (namespace, service, state = {}, effects, setup, reduce
             }
           })
         } else {
-          setup(dispatch, history)
+          setup({ dispatch, history })
         }
       },
     },
@@ -170,6 +170,7 @@ function genComPageModel (namespace, service, state = {}, effects, setup, reduce
 
 function genCRUDComModel (namespace, service, state = {}, effects, setup, reducers) {
   return modelExtend(genComModel(namespace, service, state, effects, setup, reducers), {
+    namespace,
     effects: {
       * create ({ payload }, { call, put }) {
         const data = yield call(service.addSvc, payload.data)
@@ -207,6 +208,7 @@ function genCRUDComModel (namespace, service, state = {}, effects, setup, reduce
 
 function genCRUDComPageModel (namespace, service, state = {}, effects, setup, reducers) {
   return modelExtend(genComPageModel(namespace, service, state, effects, setup, reducers), {
+    namespace,
     effects: {
       * create ({ payload }, { call, put }) {
         const data = yield call(service.addSvc, payload.data)

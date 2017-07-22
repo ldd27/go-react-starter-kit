@@ -9,9 +9,9 @@ import (
 func Login(c *comStruct.CustomContext) error {
 	req := new(models.SeaSysUser)
 
-	err := c.Bind(req)
+	err := c.BindEx(req)
 	if err != nil {
-		return errCode.ErrorInvalidJson
+		return err
 	}
 
 	if req.LoginKey == "" || req.Password == "" {
