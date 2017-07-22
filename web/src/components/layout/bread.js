@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Breadcrumb, Icon } from 'antd'
 import { Link } from 'dva/router'
 import pathToRegexp from 'path-to-regexp'
+import { queryArray } from 'utils'
 import styles from './bread.less'
-import { queryArray } from '../../utils'
 
 const Bread = ({ menu }) => {
   // 匹配当前路由

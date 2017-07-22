@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Helmet } from 'react-helmet'
 import NProgress from 'nprogress'
-import { Layout } from '../components'
-import { classnames, config } from '../utils'
+import { classnames } from 'utils'
+import { prefix, name, openPages, iconFontJS, iconFontCSS, logo } from 'config'
+import { Layout } from 'components'
 import '../themes/index.less'
 import './app.less'
-
-const { prefix, name } = config
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
@@ -66,20 +65,18 @@ const App = ({ children, location, dispatch, app, loading }) => {
     menu,
   }
 
-  if (config.openPages && config.openPages.indexOf(location.pathname) > -1) {
+  if (openPages && openPages.indexOf(location.pathname) > -1) {
     return <div>{children}</div>
   }
-
-  const { iconFontJS, iconFontCSS, logo } = config
 
   return (
     <div>
       <Helmet>
         <title>{name}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href={logo} type="image/x-icon" />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <link rel='icon' href={logo} type='image/x-icon' />
         {iconFontJS && <script src={iconFontJS} />}
-        {iconFontCSS && <link rel="stylesheet" href={iconFontCSS} />}
+        {iconFontCSS && <link rel='stylesheet' href={iconFontCSS} />}
       </Helmet>
       <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
         {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>

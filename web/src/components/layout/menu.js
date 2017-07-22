@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Menu, Icon } from 'antd'
 import { Link } from 'dva/router'
 import pathToRegexp from 'path-to-regexp'
-import { arrayToTree, queryArray } from '../../utils'
+import { arrayToTree, queryArray } from 'utils'
 
 const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
   // 生成树状

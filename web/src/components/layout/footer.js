@@ -1,10 +1,10 @@
 import React from 'react'
+import { footerText } from 'config'
 import styles from './footer.less'
-import { config } from '../../utils'
 
 const Footer = () => (
   <div className={styles.footer}>
-    {config.footerText}
+    {footerText}
   </div>
 )
 

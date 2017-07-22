@@ -1,9 +1,8 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
+import { checkApiRs, cookie } from 'utils'
+import { prefix } from 'config'
 import * as service from '../services/app'
-import { config, checkApiRs, cookie } from '../utils'
-
-const { prefix } = config
 
 export default {
   namespace: 'app',

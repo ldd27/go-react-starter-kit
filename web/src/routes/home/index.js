@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import Table from '../../components/table'
+import { DDTable } from 'components'
 
 const Home = ({ sysLog }) => {
   const columns = [
@@ -37,7 +37,7 @@ const Home = ({ sysLog }) => {
   }
   return (
     <div className='content-inner'>
-      <Table {...tableProps} />
+      <DDTable {...tableProps} />
     </div>
   )
 }

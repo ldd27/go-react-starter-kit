@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Button, Row, Form, Input } from 'antd'
-import { config } from '../../utils'
+import { logo, name } from 'config'
 import styles from './index.less'
 
 const FormItem = Form.Item
@@ -29,8 +29,8 @@ const Login = ({
   return (
     <div className={styles.form}>
       <div className={styles.logo}>
-        <img alt={'logo'} src={config.logo} />
-        <span>{config.name}</span>
+        <img alt={'logo'} src={logo} />
+        <span>{name}</span>
       </div>
       <form>
         <FormItem hasFeedback>

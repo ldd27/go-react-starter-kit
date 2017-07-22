@@ -1,4 +1,4 @@
-import { get, post } from '../utils'
+import { get, post } from 'utils'
 
 export async function checkIsLoginService (params) {
   return get('sysUser/checkIsLogin', params)

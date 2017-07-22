@@ -1,6 +1,6 @@
 import React from 'react'
-import DDTable from '../../components/table'
-import { formatDate } from '../../utils'
+import { formatDate } from 'utils'
+import { DDTable } from 'components'
 
 const Table = ({ ...tableProps }) => {
   const columns = [
