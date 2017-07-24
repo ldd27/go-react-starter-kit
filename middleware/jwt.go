@@ -5,15 +5,17 @@ import (
 
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-lib/tool"
+	"github.com/jdongdong/go-react-starter-kit/common/comStruct"
+	"github.com/jdongdong/go-react-starter-kit/common/errCode"
 	"github.com/jdongdong/go-react-starter-kit/models"
-	"github.com/jdongdong/go-react-starter-kit/modules/comStruct"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
 	"github.com/labstack/echo"
+	"github.com/dgrijalva/jwt-go"
 )
 
-const (
-	UserId = "userId"
-)
+type JwtCustomClaims struct {
+	UserID  string
+	jwt.StandardClaims
+}
 
 func JwtHandler() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {

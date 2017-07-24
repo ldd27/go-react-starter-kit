@@ -7,8 +7,8 @@ import (
 
 	"github.com/jdongdong/go-lib/slog"
 	cus "github.com/jdongdong/go-react-starter-kit/middleware"
-	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/comStruct"
+	"github.com/jdongdong/go-react-starter-kit/common/apiCode"
+	"github.com/jdongdong/go-react-starter-kit/common/comStruct"
 	"github.com/jdongdong/go-react-starter-kit/routers/webapi"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"

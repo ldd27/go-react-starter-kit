@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/jdongdong/go-react-starter-kit/modules/comCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/common/comCode"
+	"github.com/jdongdong/go-react-starter-kit/common/errCode"
 )
 
 func (this *SysToken) Insert() error {

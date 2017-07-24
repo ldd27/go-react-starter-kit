@@ -12,8 +12,8 @@ import (
 
 	"github.com/jdongdong/go-lib/slog"
 	"github.com/jdongdong/go-react-starter-kit/models"
-	"github.com/jdongdong/go-react-starter-kit/modules/apiCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/common/apiCode"
+	"github.com/jdongdong/go-react-starter-kit/common/errCode"
 	"github.com/labstack/echo"
 	"github.com/pquerna/ffjson/ffjson"
 )
@@ -47,7 +47,7 @@ func (this *CustomContext) toResModel(err_code int, info string, r interface{}) 
 	}
 
 	res := ResModel{Success: success, Code: err_code, Info: info, R: r}
-	defer func() {
+	go func() {
 		vlu, err := ffjson.Marshal(r)
 		if err == nil {
 			slog.Debug(fmt.Sprintf("url:%s success:%s code:%d info:%s r:%s", this.Request().RequestURI, success, err_code, info, string(vlu)))
@@ -74,14 +74,14 @@ func (this *CustomContext) Fail(err error) error {
 	return this.String(http.StatusOK, string(vlu))
 }
 
-func (this *CustomContext) AutoPageDataRs(i interface{}, total int64, err error) error {
+func (this *CustomContext) PageDataRs(i interface{}, total int64, err error) error {
 	if err != nil {
 		return err
 	}
 	return this.Success(PageResModel{Data: i, Total: total})
 }
 
-func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
+func (this *CustomContext) DataRs(i interface{}, err error) error {
 	if err != nil {
 		return err
 	}
@@ -89,22 +89,24 @@ func (this *CustomContext) AutoDataRs(i interface{}, err error) error {
 }
 
 func (this *CustomContext) WriteLog(title string, info interface{}) {
-	log := new(models.SysLog)
-	log.Title = title
-	vlu, err := ffjson.Marshal(info)
-	if err == nil {
-		log.Info = string(vlu)
-	} else {
-		log.Info = fmt.Sprintf("%+v", info)
-	}
-	log.IpAddr = this.RealIP()
-	log.OpTime = time.Now()
-	log.OpUser = this.UserID
-	log.ReqUri = this.Request().RequestURI
-	log.Insert()
+	go func() {
+		log := new(models.SysLog)
+		log.Title = title
+		vlu, err := ffjson.Marshal(info)
+		if err == nil {
+			log.Info = string(vlu)
+		} else {
+			log.Info = fmt.Sprintf("%+v", info)
+		}
+		log.IpAddr = this.RealIP()
+		log.OpTime = time.Now()
+		log.OpUser = this.UserID
+		log.ReqUri = this.Request().RequestURI
+		log.Insert()
+	}()
 }
 
-func (this *CustomContext) PageRs(req models.PagingInterface) error {
+func (this *CustomContext) AutoPageRs(req models.PagingInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("Page").CanSet() {
 		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx("page", 1)))
@@ -112,10 +114,10 @@ func (this *CustomContext) PageRs(req models.PagingInterface) error {
 	if temp.FieldByName("Size").CanSet() {
 		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx("size", 10)))
 	}
-	return this.AutoPageDataRs(req.GetPaging())
+	return this.PageDataRs(req.GetPaging())
 }
 
-func (this *CustomContext) PageDtlRs(req models.PagingDtlInterface) error {
+func (this *CustomContext) AutoPageDtlRs(req models.PagingDtlInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("Page").CanSet() {
 		temp.FieldByName("Page").Set(reflect.ValueOf(this.ToIntEx("page", 1)))
@@ -123,10 +125,10 @@ func (this *CustomContext) PageDtlRs(req models.PagingDtlInterface) error {
 	if temp.FieldByName("Size").CanSet() {
 		temp.FieldByName("Size").Set(reflect.ValueOf(this.ToIntEx("size", 10)))
 	}
-	return this.AutoPageDataRs(req.GetDtlPaging())
+	return this.PageDataRs(req.GetDtlPaging())
 }
 
-func (this *CustomContext) InsertRs(logTag string, req models.InsertInterface) error {
+func (this *CustomContext) AutoInsertRs(logTag string, req models.InsertInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("CreateBy").CanSet() {
 		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
@@ -138,7 +140,7 @@ func (this *CustomContext) InsertRs(logTag string, req models.InsertInterface) e
 	return req.Insert()
 }
 
-func (this *CustomContext) UpdateRs(logTag string, req models.UpdateByIdInterface) error {
+func (this *CustomContext) AutoUpdateRs(logTag string, req models.UpdateByIdInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("UpdateBy").CanSet() {
 		temp.FieldByName("UpdateBy").Set(reflect.ValueOf(this.UserID))
@@ -147,12 +149,12 @@ func (this *CustomContext) UpdateRs(logTag string, req models.UpdateByIdInterfac
 	return req.UpdateById()
 }
 
-func (this *CustomContext) DeleteRs(logTag string, req models.DeleteByIdInterface) error {
+func (this *CustomContext) AutoDeleteRs(logTag string, req models.DeleteByIdInterface) error {
 	this.WriteLog(logTag, req)
 	return req.DeleteById()
 }
 
-func (this *CustomContext) InsertTransRs(logTag string, req models.InsertTransInterface) error {
+func (this *CustomContext) AutoInsertTransRs(logTag string, req models.InsertTransInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("CreateBy").CanSet() {
 		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
@@ -164,7 +166,7 @@ func (this *CustomContext) InsertTransRs(logTag string, req models.InsertTransIn
 	return req.InsertTrans()
 }
 
-func (this *CustomContext) UpdateTransRs(logTag string, req models.UpdateTransInterface) error {
+func (this *CustomContext) AutoUpdateTransRs(logTag string, req models.UpdateTransInterface) error {
 	temp := reflect.ValueOf(req).Elem()
 	if temp.FieldByName("CreateBy").CanSet() {
 		temp.FieldByName("CreateBy").Set(reflect.ValueOf(this.UserID))
@@ -176,7 +178,7 @@ func (this *CustomContext) UpdateTransRs(logTag string, req models.UpdateTransIn
 	return req.UpdateTrans()
 }
 
-func (this *CustomContext) DeleteTransRs(logTag string, req models.DeleteTransInterface) error {
+func (this *CustomContext) AutoDeleteTransRs(logTag string, req models.DeleteTransInterface) error {
 	this.WriteLog(logTag, req)
 	return req.DeleteTrans()
 }

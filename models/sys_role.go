@@ -1,6 +1,6 @@
 package models
 
-import "github.com/jdongdong/go-react-starter-kit/modules/errCode"
+import "github.com/jdongdong/go-react-starter-kit/common/errCode"
 
 func (this *SysRoleUser) GetMenusByUserID() ([]LeftMenuModel, error) {
 	menus := make([]SysMenu, 0)

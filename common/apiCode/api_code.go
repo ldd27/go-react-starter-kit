@@ -1,6 +1,6 @@
 package apiCode
 
-import "github.com/jdongdong/go-react-starter-kit/modules/errCode"
+import "github.com/jdongdong/go-react-starter-kit/common/errCode"
 
 const (
 	Success             int = 0

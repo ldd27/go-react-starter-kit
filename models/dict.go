@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-xorm/xorm"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/common/errCode"
 )
 
 type SeaDictIndex struct {

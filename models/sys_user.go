@@ -3,8 +3,8 @@ package models
 import (
 	"github.com/go-xorm/xorm"
 	"github.com/jdongdong/go-lib/tool"
-	"github.com/jdongdong/go-react-starter-kit/modules/comCode"
-	"github.com/jdongdong/go-react-starter-kit/modules/errCode"
+	"github.com/jdongdong/go-react-starter-kit/common/comCode"
+	"github.com/jdongdong/go-react-starter-kit/common/errCode"
 )
 
 type SeaSysUser struct {
