@@ -6,6 +6,7 @@ import NProgress from 'nprogress'
 import { classnames } from 'utils'
 import { prefix, name, openPages, iconFontJS, iconFontCSS, logo } from 'config'
 import { Layout } from 'components'
+import '../../node_modules/nprogress/nprogress.css'
 import '../themes/index.less'
 import './app.less'
 

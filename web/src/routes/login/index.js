@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { logo, name } from 'config'
 import styles from './index.less'
 
@@ -27,40 +27,41 @@ const Login = ({
   }
 
   return (
-    <div className={styles.form}>
-      <div className={styles.logo}>
+    <div className={styles.bg}>
+      <div className={styles.header}>
         <img alt={'logo'} src={logo} />
-        <span>{name}</span>
+        <br />
+        <br />
+        <h1 className={styles.title}>{name}</h1>
+        <span className={styles.desc}>{name}</span>
       </div>
-      <form>
-        <FormItem hasFeedback>
-          {getFieldDecorator('LoginKey', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input size='large' onPressEnter={handleOk} placeholder='Username' />)}
-        </FormItem>
-        <FormItem hasFeedback>
-          {getFieldDecorator('Password', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input size='large' type='password' onPressEnter={handleOk} placeholder='Password' />)}
-        </FormItem>
-        <Row>
-          <Button type='primary' size='large' onClick={handleOk} loading={loginLoading}>
-            登录
-          </Button>
-          <p>
-            <span>为了更好的用户体验，请使用谷歌浏览器</span>
-          </p>
-        </Row>
-
-      </form>
+      <div className={styles.form}>
+        <Form>
+          <FormItem hasFeedback>
+            {getFieldDecorator('LoginKey', {
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input size='large' onPressEnter={handleOk} placeholder='用户名' prefix={<Icon type='user' />} />)}
+          </FormItem>
+          <FormItem hasFeedback>
+            {getFieldDecorator('Password', {
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input size='large' type='password' onPressEnter={handleOk} placeholder='密码' prefix={<Icon type='lock' />} />)}
+          </FormItem>
+          <FormItem>
+            <Button type='primary' size='large' style={{ width: '100%' }} onClick={handleOk} loading={loginLoading}>
+              登录
+            </Button>
+          </FormItem>
+        </Form>
+      </div>
     </div>
   )
 }
