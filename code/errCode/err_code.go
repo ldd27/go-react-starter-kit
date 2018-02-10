@@ -1,9 +1,10 @@
 package errCode
 
 import (
-	"IoTApi/codes/apiCode"
 	"errors"
 	"net/http"
+
+	"github.com/jdongdong/go-react-starter-kit/code/apiCode"
 
 	cusErr "github.com/go-errors/errors"
 	"github.com/jdongdong/go-lib/slog"

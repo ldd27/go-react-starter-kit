@@ -1,0 +1,37 @@
+<seelog type="asynctimer" asyncinterval="5000000" minlevel="trace" maxlevel="critical">
+    <!--<exceptions>-->
+    <!--<exception funcpattern="*main.test*Something*" minlevel="trace"/>-->
+    <!--<exception filepattern="*main.go" minlevel="error"/>-->
+    <!--</exceptions>-->
+    <outputs formatid="common">
+        <console/>
+
+        <!--10485760 10 * 1024 * 1024 10M-->
+        <filter levels="trace">
+            <rollingfile filename="./log/trace/trace.log" type="size" maxsize="10485760" maxrolls="100"/>
+        </filter>
+
+        <filter levels="debug">
+            <rollingfile filename="./log/debug/debug.log" type="size" maxsize="10485760" maxrolls="100"/>
+        </filter>
+
+        <filter levels="info">
+            <rollingfile filename="./log/info/info.log" type="date" datepattern="2006-01-02" maxrolls="100"/>
+        </filter>
+
+        <filter levels="warn">
+            <rollingfile filename="./log/warn/warn.log" type="size" maxsize="10485760" maxrolls="100"/>
+        </filter>
+
+        <filter levels="error">
+            <rollingfile filename="./log/error/error.log" type="size" maxsize="10485760" maxrolls="100"/>
+        </filter>
+
+        <filter levels="critical">
+            <rollingfile filename="./log/critical/critical.log" type="size" maxsize="10485760" maxrolls="100"/>
+        </filter>
+    </outputs>
+    <formats>
+        <format id="common" format="%Date(2006-01-02 15:04:05.000) [%l] %Msg%n"/>
+    </formats>
+</seelog>

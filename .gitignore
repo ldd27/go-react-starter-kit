@@ -4,6 +4,4 @@ log/
 gen_model.bat
 .idea/
 lastupdate.tmp
-vendor/
-.vendor/
 conf/app.ini

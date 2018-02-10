@@ -1,0 +1,143 @@
+{
+	"ImportPath": "github.com/jdongdong/go-react-starter-kit",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/bwmarrin/snowflake",
+			"Rev": "02cc386c183a1bf89dcac8c8008bb465f69d3340"
+		},
+		{
+			"ImportPath": "github.com/cihub/seelog",
+			"Comment": "v2.6-31-gf561c5e",
+			"Rev": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4"
+		},
+		{
+			"ImportPath": "github.com/cihub/seelog/archive",
+			"Comment": "v2.6-31-gf561c5e",
+			"Rev": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4"
+		},
+		{
+			"ImportPath": "github.com/cihub/seelog/archive/gzip",
+			"Comment": "v2.6-31-gf561c5e",
+			"Rev": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4"
+		},
+		{
+			"ImportPath": "github.com/cihub/seelog/archive/tar",
+			"Comment": "v2.6-31-gf561c5e",
+			"Rev": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4"
+		},
+		{
+			"ImportPath": "github.com/cihub/seelog/archive/zip",
+			"Comment": "v2.6-31-gf561c5e",
+			"Rev": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4"
+		},
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v3.0.0-8-g24c63f5",
+			"Rev": "24c63f56522a87ec5339cc3567883f1039378fdb"
+		},
+		{
+			"ImportPath": "github.com/go-errors/errors",
+			"Comment": "v1.0.0",
+			"Rev": "3afebba5a48dbc89b574d890b6b34d9ee10b4785"
+		},
+		{
+			"ImportPath": "github.com/go-ini/ini",
+			"Comment": "v1.28.0-1-g3d73f4b",
+			"Rev": "3d73f4b845efdf9989fffd4b4e562727744a34ba"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.3-28-g3955978",
+			"Rev": "3955978caca48c1658a4bb7a9c6a0f084e326af3"
+		},
+		{
+			"ImportPath": "github.com/go-xorm/builder",
+			"Rev": "c8871c857d2555fbfbd8524f895be5386d3d8836"
+		},
+		{
+			"ImportPath": "github.com/go-xorm/core",
+			"Comment": "v0.5.6-11-ge9b7412",
+			"Rev": "e9b7412d750de4920b1c7b3ede5a98fd76d38308"
+		},
+		{
+			"ImportPath": "github.com/go-xorm/xorm",
+			"Comment": "v0.6.2-54-g774f83c",
+			"Rev": "774f83c1bc04aca2a136270778d70ba0212d25d5"
+		},
+		{
+			"ImportPath": "github.com/jdongdong/go-lib/slog",
+			"Rev": "aff4ef29439d8927c95ce41c3113ae58fd66f60c"
+		},
+		{
+			"ImportPath": "github.com/jdongdong/go-lib/tool",
+			"Rev": "aff4ef29439d8927c95ce41c3113ae58fd66f60c"
+		},
+		{
+			"ImportPath": "github.com/json-iterator/go",
+			"Comment": "1.0.5-8-g002b5ae",
+			"Rev": "002b5ae34214fdc0bad508c2ed6f572fa96dfdda"
+		},
+		{
+			"ImportPath": "github.com/labstack/echo",
+			"Comment": "3.2.6-20-gfad19bf",
+			"Rev": "fad19bf4ea9727ef6d02e9e0a39b1a2a13a17a6a"
+		},
+		{
+			"ImportPath": "github.com/labstack/echo/middleware",
+			"Comment": "3.2.6-20-gfad19bf",
+			"Rev": "fad19bf4ea9727ef6d02e9e0a39b1a2a13a17a6a"
+		},
+		{
+			"ImportPath": "github.com/labstack/gommon/bytes",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
+		},
+		{
+			"ImportPath": "github.com/labstack/gommon/color",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
+		},
+		{
+			"ImportPath": "github.com/labstack/gommon/log",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
+		},
+		{
+			"ImportPath": "github.com/labstack/gommon/random",
+			"Comment": "0.2.3",
+			"Rev": "57409ada9da0f2afad6664c49502f8c50fbd8476"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Comment": "v0.0.9-13-g7dc3415",
+			"Rev": "7dc3415be66d7cc68bf0182f35c8d31f8d2ad8a7"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Comment": "v0.0.3-7-g6ca4dbf",
+			"Rev": "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+		},
+		{
+			"ImportPath": "github.com/valyala/bytebufferpool",
+			"Rev": "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
+		},
+		{
+			"ImportPath": "github.com/valyala/fasttemplate",
+			"Rev": "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/acme",
+			"Rev": "5119cf507ed5294cc409c092980c7497ee5d6fd2"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/acme/autocert",
+			"Rev": "5119cf507ed5294cc409c092980c7497ee5d6fd2"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "b6e1ae21643682ce023deb8d152024597b0e9bb4"
+		}
+	]
+}
