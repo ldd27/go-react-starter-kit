@@ -1,7 +1,8 @@
 go-react-starter-kit.exe~
 go-react-starter-kit.exe
 log/
-gen_model.bat
 .idea/
 lastupdate.tmp
 conf/app.ini
+scripts/gen_model.bat
+scripts/models/
