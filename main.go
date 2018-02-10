@@ -12,5 +12,8 @@ import (
 func main() {
 	tool.SetTokenSecretKey(setting.TokenSecret)
 	router := routers.Init()
+	go func() {
+		router.StartAutoTLS(":443")
+	}()
 	slog.Error(router.Start(fmt.Sprintf(":%d", setting.Port)))
 }

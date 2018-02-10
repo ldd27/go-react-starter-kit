@@ -47,12 +47,13 @@ func NewEcho(opts ...func(*EchoConf)) *echo.Echo {
 	}
 
 	e := echo.New()
-
+	//e.AutoTLSManager.Cache = autocert.DirCache("/tls/.cache")
 	e.Debug = conf.Debug
 	e.HideBanner = conf.HideBanner
 	if conf.RemoveTrailingSlash {
 		e.Pre(middleware.RemoveTrailingSlash())
 	}
+	e.Pre(middleware.HTTPSRedirect())
 	if conf.EnableRecover {
 		e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 			StackSize: 1 << 10, // 1 KB
