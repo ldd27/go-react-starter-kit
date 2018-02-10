@@ -2,32 +2,26 @@ package models
 
 import (
 	"fmt"
-	"time"
-
 	"reflect"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
-	"github.com/jdongdong/go-lib/slog"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
-	"github.com/jdongdong/go-react-starter-kit/pkg/setting"
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
+	"github.com/jdongdong/go-react-starter-kit/code/setting"
+	"github.com/jdongdong/go-react-starter-kit/com"
 )
 
 var (
-	x      *xorm.Engine
+	db     *xorm.Engine
 	tables []interface{}
 )
 
-type SeaModel struct {
+type seaModel struct {
 	Page         int `json:"page"`
 	Size         int `json:"size"`
-	seaInterface SeaInterface
-}
-
-type SeaDtlModel struct {
-	SeaModel
-	seaDtlInterface SeaDtlInterface
+	seaInterface com.SeaInterface
 }
 
 type TreeModel struct {
@@ -48,84 +42,17 @@ type LeftMenuModel struct {
 	Router string `json:"router"`
 }
 
-type SeaInterface interface {
-	where(session *xorm.Session)
-}
-
-type SeaDtlInterface interface {
-	where(session *xorm.Session)
-	whereDtl(session *xorm.Session)
-}
-
-type PagingInterface interface {
-	GetPaging() (interface{}, int64, error)
-}
-
-type PagingDtlInterface interface {
-	GetDtlPaging() (interface{}, int64, error)
-}
-
-type InsertInterface interface {
-	Insert() error
-}
-
-type UpdateByIdInterface interface {
-	UpdateById() error
-}
-
-type DeleteByIdInterface interface {
-	DeleteById() error
-}
-
-type InsertTransInterface interface {
-	InsertTrans() error
-}
-
-type UpdateTransInterface interface {
-	UpdateTrans() error
-}
-
-type DeleteTransInterface interface {
-	DeleteTrans() error
-}
-
 func init() {
-	tables = append(tables, new(SysUser))
-	//LoadConfig()
-	err := NewEngine()
-	slog.Error(err)
-	err = x.Ping()
-	slog.Error(err)
-}
-
-func SetEngine() (err error) {
-	x, err = xorm.NewEngine("mysql", setting.MysqlCfg.Conn)
-	if err != nil {
-		return fmt.Errorf("fail to connect to database: %v", err)
+	conf := func(option *com.XORMConf) {
+		option.DBType = setting.DBConf.DBType
+		option.Host = setting.DBConf.Host
+		option.Port = setting.DBConf.Port
+		option.DB = setting.DBConf.Db
+		option.User = setting.DBConf.User
+		option.Pwd = setting.DBConf.Pwd
+		option.LogLevel = core.LOG_INFO
 	}
-	x.SetMapper(core.GonicMapper{})
-	x.TZLocation = time.Local
-	x.SetMaxOpenConns(2000)
-	x.SetMaxIdleConns(1000)
-	x.DB().SetConnMaxLifetime(time.Second * 5)
-	x.ShowExecTime(true)
-
-	x.ShowSQL(true)
-	//x.Logger().SetLevel(core.LOG_ERR)
-	x.Logger().SetLevel(core.LOG_INFO)
-	return nil
-}
-
-func NewEngine() (err error) {
-	if err = SetEngine(); err != nil {
-		return err
-	}
-	//同步数据库结构
-	//if err = x.StoreEngine("InnoDB").Sync2(tables...); err != nil {
-	//	return fmt.Errorf("sync database struct error: %v", err)
-	//}
-
-	return nil
+	db = com.NewXORM(conf)
 }
 
 func toLike(s string) string {
@@ -144,53 +71,90 @@ func toPaging(page, size int) (limit, start int) {
 	return limit, start
 }
 
-func (this *SeaModel) _getPaging(i SeaInterface, bean interface{}, item interface{}) (int64, error) {
-	session := x.NewSession()
-	i.where(session)
+func (s *seaModel) getPaging(i com.SeaInterface, bean interface{}, item interface{}) (int64, error) {
+	session := db.NewSession()
+	i.Where(session)
 
-	total, err := session.Count(bean)
-	if err := errCode.CheckErrorDB(err); err != nil {
-		return 0, err
+	total, err := db.Alias(session.Statement.TableAlias).Where(session.Conds()).Count(bean)
+	if err != nil {
+		return 0, errCode.NewErrorDB(err, 1)
 	}
-	session2 := x.NewSession()
-	i.where(session2)
-	err = session2.
-		Limit(toPaging(this.Page, this.Size)).
+	err = session.
+		Limit(toPaging(s.Page, s.Size)).
 		Find(item)
-	return total, errCode.CheckErrorDB(err)
-}
-
-func (this *SeaModel) _getDtlPaging(i SeaDtlInterface, bean interface{}, item interface{}) (int64, error) {
-	session := x.NewSession()
-	i.where(session)
-	i.whereDtl(session)
-
-	total, err := session.Count(bean)
-	if err := errCode.CheckErrorDB(err); err != nil {
-		return 0, err
+	if err != nil {
+		return 0, errCode.NewErrorDB(err, 1)
 	}
-	session2 := x.NewSession()
-	i.where(session2)
-	i.whereDtl(session2)
-	err = session2.
-		Limit(toPaging(this.Page, this.Size)).
+	return total, nil
+}
+
+func (s *seaModel) getDtlPaging(i com.SeaDtlInterface, bean interface{}, item interface{}) (int64, error) {
+	session := db.NewSession()
+	i.Where(session)
+	i.WhereDtl(session)
+
+	total, err := db.Alias(session.Statement.TableAlias).Where(session.Conds()).Count(bean)
+	if err != nil {
+		return 0, errCode.NewErrorDB(err, 1)
+	}
+	err = session.
+		Limit(toPaging(s.Page, s.Size)).
 		Find(item)
-	return total, errCode.CheckErrorDB(err)
+	if err != nil {
+		return 0, errCode.NewErrorDB(err, 1)
+	}
+	return total, nil
 }
 
-func (this *SeaModel) _getAll(i SeaInterface, item interface{}) error {
-	session := x.NewSession()
-	i.where(session)
-	return errCode.CheckErrorDB(session.Find(item))
+func (s *seaModel) getAll(i com.SeaInterface, item interface{}) error {
+	session := db.NewSession()
+	i.Where(session)
+	err := session.Find(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	return nil
 }
 
-func (this *SeaModel) _getOne(i SeaInterface, item interface{}) error {
-	session := x.NewSession()
-	i.where(session)
-	return errCode.CheckErrorDataNull(session.Get(item))
+func (s *seaModel) getDtlAll(i com.SeaDtlInterface, item interface{}) error {
+	session := db.NewSession()
+	i.Where(session)
+	i.WhereDtl(session)
+	err := session.Find(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	return nil
 }
 
-func _insert(item interface{}) error {
+func (s *seaModel) getOne(i com.SeaInterface, item interface{}) error {
+	session := db.NewSession()
+	i.Where(session)
+	has, err := session.Get(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if !has {
+		return errCode.NewErrorNoRecord(1)
+	}
+	return nil
+}
+
+func (s *seaModel) getDtlOne(i com.SeaDtlInterface, item interface{}) error {
+	session := db.NewSession()
+	i.Where(session)
+	i.WhereDtl(session)
+	has, err := session.Get(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if !has {
+		return errCode.NewErrorNoRecord(1)
+	}
+	return nil
+}
+
+func insert(item interface{}) error {
 	temp := reflect.ValueOf(item).Elem()
 	if temp.FieldByName("CreateTime").CanSet() {
 		temp.FieldByName("CreateTime").Set(reflect.ValueOf(time.Now()))
@@ -198,26 +162,59 @@ func _insert(item interface{}) error {
 	if temp.FieldByName("UpdateTime").CanSet() {
 		temp.FieldByName("UpdateTime").Set(reflect.ValueOf(time.Now()))
 	}
-	_, err := x.Insert(item)
-	return errCode.CheckErrorDB(err)
+	count, err := db.Insert(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if count == 0 {
+
+	}
+	return nil
 }
 
-func _uptByID(id interface{}, item interface{}) error {
+func uptByID(id interface{}, item interface{}) error {
 	temp := reflect.ValueOf(item).Elem()
 	if temp.FieldByName("UpdateTime").CanSet() {
 		temp.FieldByName("UpdateTime").Set(reflect.ValueOf(time.Now()))
 	}
-	_, err := x.Omit("create_time").ID(id).Update(item)
-	return errCode.CheckErrorDB(err)
+	count, err := db.ID(id).Update(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if count == 0 {
+		return errCode.NewErrorNoRecord(1)
+	}
+	return nil
 }
 
-func _delByID(id interface{}, item interface{}) error {
-	_, err := x.Id(id).Delete(item)
-	return errCode.CheckErrorDB(err)
+func uptIsNullByID(id interface{}, item interface{}, columns ...string) error {
+	temp := reflect.ValueOf(item).Elem()
+	if temp.FieldByName("UpdateTime").CanSet() {
+		temp.FieldByName("UpdateTime").Set(reflect.ValueOf(time.Now()))
+	}
+	count, err := db.Cols(columns...).ID(id).Update(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if count == 0 {
+		return errCode.NewErrorNoRecord(1)
+	}
+	return nil
 }
 
-func _trans(fun func(session *xorm.Session) error) error {
-	session, err := _startTrans()
+func delByID(id interface{}, item interface{}) error {
+	count, err := db.Id(id).Delete(item)
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	if count == 0 {
+		return errCode.NewErrorNoRecord(1)
+	}
+	return nil
+}
+
+func trans(fun func(session *xorm.Session) error) error {
+	session, err := startTrans()
 	defer session.Close()
 	if err != nil {
 		return err
@@ -225,27 +222,32 @@ func _trans(fun func(session *xorm.Session) error) error {
 
 	err = fun(session)
 	if err != nil {
-		return _checkRollback(session, err)
+		return checkRollback(session, err)
 	}
 
-	return _commitTrans(session)
+	return commitTrans(session)
 }
 
-func _startTrans() (*xorm.Session, error) {
-	session := x.NewSession()
-	err := errCode.CheckErrorDB(session.Begin())
+func startTrans() (*xorm.Session, error) {
+	session := db.NewSession()
+	err := session.Begin()
+	if err != nil {
+		return nil, errCode.NewErrorDB(err, 1)
+	}
 	return session, err
 }
 
-func _commitTrans(session *xorm.Session) error {
-	return errCode.CheckErrorDB(session.Commit())
+func commitTrans(session *xorm.Session) error {
+	err := session.Commit()
+	if err != nil {
+		return errCode.NewErrorDB(err, 1)
+	}
+	return nil
 }
 
-func _checkRollback(session *xorm.Session, err error) error {
-	if err = errCode.CheckErrorDB(err); err != nil {
+func checkRollback(session *xorm.Session, err error) error {
+	if err != nil {
 		session.Rollback()
-		return err
-	} else {
-		return nil
 	}
+	return err
 }

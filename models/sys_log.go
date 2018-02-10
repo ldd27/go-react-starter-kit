@@ -7,7 +7,7 @@ import (
 )
 
 type SeaSysLog struct {
-	SeaModel
+	seaModel
 	Id     int64
 	Type   string
 	Title  string
@@ -30,7 +30,7 @@ type SysLogDtlModel struct {
 	OpUserName  string
 }
 
-func (this *SeaSysLog) where(session *xorm.Session) {
+func (this *SeaSysLog) Where(session *xorm.Session) {
 	if this.Id != 0 {
 		session.And("sys_log.id = ?", this.Id)
 	}
@@ -46,24 +46,24 @@ func (this *SeaSysLog) where(session *xorm.Session) {
 	session.Table("sys_log").Desc("sys_log.op_time")
 }
 
-func (this *SeaSysLog) whereDtl(session *xorm.Session) {
+func (this *SeaSysLog) WhereDtl(session *xorm.Session) {
 	session.Join("LEFT", "sys_user", "sys_user.id = sys_log.op_user")
 	session.Statement.ColumnStr = "sys_log.*, sys_user.user_name as op_user_name"
 }
 
 func (this *SeaSysLog) GetPaging() (interface{}, int64, error) {
 	items := make([]SysLogModel, 0, this.Size)
-	count, err := this._getPaging(this, new(SysLog), &items)
+	count, err := this.getPaging(this, new(SysLog), &items)
 	return items, count, err
 }
 
 func (this *SeaSysLog) GetDtlPaging() (interface{}, int64, error) {
 	items := make([]SysLogDtlModel, 0, this.Size)
-	count, err := this._getDtlPaging(this, new(SysLog), &items)
+	count, err := this.getDtlPaging(this, new(SysLog), &items)
 	return items, count, err
 }
 
 func (this *SysLog) Insert() error {
 	item := SysLog(*this)
-	return _insert(item)
+	return insert(item)
 }

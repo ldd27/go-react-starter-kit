@@ -1,14 +1,15 @@
 package models
 
 import (
+	"github.com/go-errors/errors"
 	"github.com/go-xorm/xorm"
 	"github.com/jdongdong/go-lib/tool"
-	"github.com/jdongdong/go-react-starter-kit/common/comCode"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
+	"github.com/jdongdong/go-react-starter-kit/code/comCode"
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
 )
 
 type SeaSysUser struct {
-	SeaModel
+	seaModel
 	Id       string
 	LoginKey string
 	Password string
@@ -40,7 +41,7 @@ func (this *SeaSysUser) GetLoginByUserID() (*WebLoginUserModel, error) {
 	sea.Id = this.Id
 	sea.Status = comCode.Status_ON
 	user := new(SysUser)
-	err := sea._getOne(sea, user)
+	err := sea.getOne(sea, user)
 	if err != nil {
 		return nil, err
 	}
@@ -100,14 +101,17 @@ func (this *SeaSysUser) WebLogin() (*WebLoginUserModel, error) {
 func (this *SeaSysUser) login() (*SysUser, error) {
 	user := new(SysUser)
 	this.Status = comCode.Status_ON
-	err := errCode.CheckErrorInvalidUser(this._getOne(this, user))
+	err := this.getOne(this, user)
+	if errors.Is(err, errCode.NewErrorNoRecord()) {
+		return nil, errCode.NewErrorUser()
+	}
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (this *SeaSysUser) where(session *xorm.Session) {
+func (this *SeaSysUser) Where(session *xorm.Session) {
 	if this.LoginKey != "" {
 		session.And("(a.user_name like ? or a.login_name like ? or a.phone like ?)", toLike(this.LoginKey), toLike(this.LoginKey), toLike(this.LoginKey))
 	}
@@ -125,20 +129,20 @@ func (this *SeaSysUser) where(session *xorm.Session) {
 
 func (this *SeaSysUser) GetPaging() (interface{}, int64, error) {
 	items := make([]SysUserModel, 0, this.Size)
-	count, err := this._getPaging(this, new(SysUser), &items)
+	count, err := this.getPaging(this, new(SysUser), &items)
 	return items, count, err
 }
 
 func (this *SysUser) Insert() error {
 	this.Id = tool.NewStrID()
 	this.Password = tool.MD5("000000")
-	return _insert(this)
+	return insert(this)
 }
 
 func (this *SysUser) UpdateById() error {
-	return _uptByID(this.Id, &this)
+	return uptByID(this.Id, &this)
 }
 
 func (this *SysUser) DeleteById() error {
-	return _delByID(this.Id, new(SysUser))
+	return delByID(this.Id, new(SysUser))
 }

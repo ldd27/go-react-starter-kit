@@ -1,12 +1,12 @@
 package webapi
 
 import (
-	"github.com/jdongdong/go-react-starter-kit/common/comStruct"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
+	"github.com/jdongdong/go-react-starter-kit/com"
 	"github.com/jdongdong/go-react-starter-kit/models"
 )
 
-func Login(c *comStruct.CustomContext) error {
+func Login(c *com.Context) error {
 	req := new(models.SeaSysUser)
 
 	err := c.BindEx(req)
@@ -15,7 +15,7 @@ func Login(c *comStruct.CustomContext) error {
 	}
 
 	if req.LoginKey == "" || req.Password == "" {
-		return errCode.ErrorParams
+		return errCode.NewErrorParams()
 	}
 
 	//user, err := req.WebLogin()
@@ -34,15 +34,15 @@ func Login(c *comStruct.CustomContext) error {
 	//}
 	//user.Token = token
 	//return c.Success(user)
-	return c.DataRs(req.WebLogin())
+	return c.RsData(req.WebLogin())
 }
 
-func CheckIsLogin(c *comStruct.CustomContext) error {
+func CheckIsLogin(c *com.Context) error {
 	req := new(models.SeaSysUser)
 	req.Id = c.UserID
-	return c.DataRs(req.GetLoginByUserID())
+	return c.RsData(req.GetLoginByUserID())
 }
 
-func Logout(c *comStruct.CustomContext) error {
+func Logout(c *com.Context) error {
 	return c.Success(nil)
 }

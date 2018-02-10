@@ -1,59 +1,58 @@
 package webapi
 
 import (
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
+	"github.com/jdongdong/go-react-starter-kit/com"
 	"github.com/jdongdong/go-react-starter-kit/models"
-	"github.com/jdongdong/go-react-starter-kit/common/comStruct"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
-	"github.com/jdongdong/go-react-starter-kit/common/logCode"
 )
 
-func GetDictIndexTree(c *comStruct.CustomContext) error {
+func GetDictIndexTree(c *com.Context) error {
 	req := new(models.SeaDictIndex)
-	return c.DataRs(req.GetTree())
+	return c.RsData(req.GetTree())
 }
 
-func GetValidDictItemsByCode(c *comStruct.CustomContext) error {
+func GetValidDictItemsByCode(c *com.Context) error {
 	req := &models.SeaDictItem{
 		DictCode: c.QueryParam("DictCode"),
 		Valid:    true,
 	}
-	return c.DataRs(req.GetValidItemsByCode())
+	return c.RsData(req.GetValidItemsByCode())
 }
 
-func GetDictItems(c *comStruct.CustomContext) error {
+func GetDictItems(c *com.Context) error {
 	req := &models.SeaDictItem{
 		DictCode: c.QueryParam("DictCode"),
 	}
 	if req.DictCode == "" {
-		return errCode.ErrorParams
+		return errCode.NewErrorParams()
 	}
-	return c.DataRs(req.GetAll())
+	return c.RsData(req.GetAll())
 }
 
-func AddDictItem(c *comStruct.CustomContext) error {
+func AddDictItem(c *com.Context) error {
 	req := &models.DictItem{}
 	err := c.BindEx(req)
 	if err != nil {
 		return err
 	}
-	return c.AutoInsertRs(logCode.AddDictItem, req)
+	return c.AutoRsInsert(req, "添加字典明细")
 }
 
-func EditDictItem(c *comStruct.CustomContext) error {
+func EditDictItem(c *com.Context) error {
 	req := &models.DictItem{}
 	err := c.BindEx(req)
 	if err != nil {
 		return err
 	}
-	return c.AutoUpdateRs(logCode.EditDictItem, req)
+	return c.AutoRsUpdate(req, "编辑字典明细")
 }
 
-func DelDictItem(c *comStruct.CustomContext) error {
+func DelDictItem(c *com.Context) error {
 	id, err := c.ToInt("Id")
 	if err != nil {
 		return err
 	}
 
 	req := &models.DictItem{Id: id}
-	return c.AutoDeleteRs(logCode.DelDictItem, req)
+	return c.AutoRsDelete(req, "删除字典明细")
 }

@@ -3,30 +3,39 @@ package models
 import (
 	"time"
 
-	"github.com/jdongdong/go-react-starter-kit/common/comCode"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
+	"github.com/jdongdong/go-react-starter-kit/code/comCode"
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
 )
 
 func (this *SysToken) Insert() error {
 	this.Status = comCode.Status_ON
-	return _insert(this)
+	return insert(this)
 }
 
 func (this *SysToken) UpdateByToken() error {
 	this.Status = comCode.Status_OFF
-	return errCode.CheckErrorDB(x.Where("token=?", this.Token).Update(this))
+	count, err := db.Where("token=?", this.Token).Update(this)
+	if err != nil {
+		return errCode.NewErrorDB(err)
+	}
+	if count == 0 {
+		return errCode.NewErrorNoRecord()
+	}
+	return nil
 }
 
 func (this *SysToken) CheckTokenExpireTime(expireMinute int) error {
 	user := new(SysToken)
 	user.Token = this.Token
-	err := errCode.CheckErrorDataNull(x.Where("token = ? and status = 'aa'", this.Token).Get(user))
+	has, err := db.Where("token = ? and status = 'aa'", this.Token).Get(user)
 	if err != nil {
-		return errCode.ErrorInvalidToken
+		return errCode.NewErrorDB(err)
 	}
-
+	if !has {
+		return errCode.NewErrorToken()
+	}
 	if (user.CreateTime.Add(time.Minute * time.Duration(expireMinute))).Unix() < time.Now().Unix() {
-		return errCode.ErrorInvalidToken
+		return errCode.NewErrorToken()
 	}
 
 	return nil

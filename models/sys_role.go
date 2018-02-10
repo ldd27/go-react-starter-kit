@@ -1,14 +1,14 @@
 package models
 
-import "github.com/jdongdong/go-react-starter-kit/common/errCode"
+import "github.com/jdongdong/go-react-starter-kit/code/errCode"
 
 func (this *SysRoleUser) GetMenusByUserID() ([]LeftMenuModel, error) {
 	menus := make([]SysMenu, 0)
-	err := errCode.CheckErrorDB(x.
+	err := db.
 		Table("sys_menu").
-		Where("status='aa' and id in (select distinct menu_id from sys_role_menu where role_id in (select role_id from sys_role_user 	INNER JOIN sys_role on sys_role_user.role_id=sys_role.id and sys_role.status='aa' and sys_role_user.user_id=?))", this.UserId).Find(&menus))
+		Where("status='aa' and id in (select distinct menu_id from sys_role_menu where role_id in (select role_id from sys_role_user 	INNER JOIN sys_role on sys_role_user.role_id=sys_role.id and sys_role.status='aa' and sys_role_user.user_id=?))", this.UserId).Find(&menus)
 	if err != nil {
-		return nil, err
+		return nil, errCode.NewErrorDB(err)
 	}
 	return this.toMenuModel(menus), nil
 }

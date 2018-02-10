@@ -3,7 +3,7 @@ go-react-starter-kit.exe
 log/
 gen_model.bat
 .idea/
-routers/commentsRouter_controllers.go
 lastupdate.tmp
 vendor/
 .vendor/
+conf/app.ini

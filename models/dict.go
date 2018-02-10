@@ -5,15 +5,15 @@ import (
 	"strconv"
 
 	"github.com/go-xorm/xorm"
-	"github.com/jdongdong/go-react-starter-kit/common/errCode"
+	"github.com/jdongdong/go-react-starter-kit/code/errCode"
 )
 
 type SeaDictIndex struct {
-	SeaModel
+	seaModel
 	//Status string
 }
 
-func (this *SeaDictIndex) where(session *xorm.Session) {
+func (this *SeaDictIndex) Where(session *xorm.Session) {
 	//if this.Status != "" {
 	//	session.And("dict_index.status = ?", this.Status)
 	//}
@@ -23,7 +23,7 @@ func (this *SeaDictIndex) where(session *xorm.Session) {
 func (this *SeaDictIndex) GetTree() ([]TreeModel, error) {
 	items := make([]DictIndex, 0)
 	//this.Status = comCode.Status_ON
-	err := this._getAll(this, &items)
+	err := this.getAll(this, &items)
 	if err != nil {
 		return nil, err
 	}
@@ -60,12 +60,12 @@ func (this *SeaDictIndex) GetTree() ([]TreeModel, error) {
 }
 
 type SeaDictItem struct {
-	SeaModel
+	seaModel
 	DictCode string
 	Valid    bool `json:"-"`
 }
 
-func (this *SeaDictItem) where(session *xorm.Session) {
+func (this *SeaDictItem) Where(session *xorm.Session) {
 	if this.DictCode != "" {
 		session.And("a.dict_code = ?", this.DictCode)
 	}
@@ -78,38 +78,38 @@ func (this *SeaDictItem) where(session *xorm.Session) {
 func (this *SeaDictItem) GetValidItemsByCode() ([]DictItem, error) {
 	items := make([]DictItem, 0)
 	this.Valid = true
-	return items, this._getAll(this, &items)
+	return items, this.getAll(this, &items)
 }
 
 func (this *SeaDictItem) GetAll() ([]DictItem, error) {
 	items := make([]DictItem, 0)
-	return items, this._getAll(this, &items)
+	return items, this.getAll(this, &items)
 }
 
 func (this *DictItem) Insert() error {
 	var maxID int64 = 1
-	rs, err := x.Query("select max(item_code) as max from dict_item where dict_code=?", this.DictCode)
+	rs, err := db.Query("select max(item_code) as max from dict_item where dict_code=?", this.DictCode)
 	if err != nil {
-		return errCode.CheckErrorDB(err)
+		return errCode.NewErrorDB(err)
 	}
 	for k, v := range rs[0] {
 		if k == "max" {
 			id, err := strconv.ParseInt(string(v), 10, 32)
 			if err != nil {
-				return errCode.CheckErrorDB(err)
+				return errCode.NewErrorDB(err)
 			}
 			maxID = id + 1
 		}
 	}
 	this.IsSys = "n"
 	this.ItemCode = fmt.Sprintf("%03d", maxID)
-	return _insert(this)
+	return insert(this)
 }
 
-func (this *DictItem) UpdateById() error {
-	return _uptByID(this.Id, this)
+func (this *DictItem) UptByID() error {
+	return uptByID(this.Id, this)
 }
 
-func (this *DictItem) DeleteById() error {
-	return _delByID(this.Id, new(DictItem))
+func (this *DictItem) DelByID() error {
+	return delByID(this.Id, new(DictItem))
 }

@@ -1,12 +1,12 @@
 package webapi
 
 import (
+	"github.com/jdongdong/go-react-starter-kit/com"
 	"github.com/jdongdong/go-react-starter-kit/models"
-	"github.com/jdongdong/go-react-starter-kit/common/comStruct"
 )
 
-func GetPagingSysLog(c *comStruct.CustomContext) error {
+func GetPagingSysLog(c *com.Context) error {
 	req := new(models.SeaSysLog)
 	req.Title = c.QueryParam("title")
-	return c.AutoPageDtlRs(req)
+	return c.AutoRsPageDtl(req)
 }
